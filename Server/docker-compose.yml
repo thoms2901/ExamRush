@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./api
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+      - minio
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/mydatabase
+      - MINIO_ENDPOINT=http://minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+    volumes:
+      - ./api:/app
+      - ./minio_data:/minio_data
+      - ./scripts/init_minio.py:/app/init_minio.py
+    command: sh -c "python init_minio.py && python app.py"
+
+  mongodb:
+    image: mongo:6
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./init_mongo.js:/docker-entrypoint-initdb.d/init_mongo.js
+
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin
+
+  minio:
+    image: minio/minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+    command: server /data --console-address ":9001"
+    # volumes:
+    #   - minio_data:/data
+
+
+volumes:
+  mongodb_data:
+  minio_data:

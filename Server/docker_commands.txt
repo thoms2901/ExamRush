@@ -1,0 +1,48 @@
+# 🐳 AVVIARE IL PROGETTO
+docker-compose up --build        # Costruisce e avvia i container
+docker-compose up -d             # Avvia i container in background
+
+# 🛑 FERMARE IL PROGETTO
+docker-compose down              # Ferma e rimuove i container
+docker-compose stop              # Ferma i container senza rimuoverli
+
+# 🔄 RESTART CONTAINER
+docker-compose restart           # Riavvia tutti i container
+docker-compose restart <service> # Riavvia un container specifico
+
+# 🔍 LISTA CONTAINER
+docker ps                        # Mostra i container attivi
+docker ps -a                     # Mostra tutti i container (anche quelli spenti)
+
+# 📂 ENTRARE IN UN CONTAINER
+docker exec -it <container_id> /bin/sh  # Entra in un container con shell (se Alpine)
+docker exec -it <container_id> /bin/bash # Entra in un container con Bash (se presente)
+
+# 📜 LOG CONTAINER
+docker logs -f <container_id>     # Mostra i log in tempo reale di un container
+docker-compose logs -f            # Mostra i log di tutti i container
+
+# 🗑️ PULIZIA DOCKER
+docker system prune -a            # Elimina tutti i container, volumi e immagini inutilizzati
+docker volume prune               # Elimina tutti i volumi inutilizzati
+docker network prune              # Elimina tutte le reti inutilizzate
+
+# 📦 GESTIONE IMMAGINI
+docker images                     # Mostra le immagini Docker disponibili
+docker rmi <image_id>             # Rimuove un'immagine Docker specifica
+docker build -t myimage .         # Crea un'immagine Docker dalla Dockerfile
+
+# 🔗 NETWORKING
+docker network ls                 # Mostra le reti Docker
+docker network inspect <network>  # Mostra i dettagli di una rete
+
+# 🗂️ GESTIONE VOLUMI
+docker volume ls                  # Mostra tutti i volumi Docker
+docker volume inspect <volume>    # Mostra i dettagli di un volume specifico
+
+# 🔄 UPDATE PROGETTO
+docker-compose pull               # Scarica le ultime immagini dei servizi
+docker-compose up -d --build      # Ricostruisce e riavvia il progetto
+
+# 🔥 RIMUOVERE COMPLETAMENTE IL PROGETTO
+docker-compose down -v            # Ferma e rimuove i container, le reti e i volumi

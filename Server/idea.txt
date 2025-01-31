@@ -1,0 +1,103 @@
+TriviaSapienza - Progetto di Applicazione per Studio e Gioco
+Obiettivo:
+Creare un'applicazione interattiva Android e un backend Flask che permetta agli utenti (studenti e insegnanti) di studiare tramite domande a risposta multipla, sfidarsi in modalità solitaria o multiplayer, e gestire quiz in modo semplice ed efficace.
+
+1. Autenticazione e Registrazione
+Autenticazione tramite Firebase:
+Gli utenti (studenti e docenti) possono registrarsi e autenticarsi tramite email e password, oppure utilizzando Google e Facebook.
+In caso di smarrimento della password, gli utenti possono reimpostarla tramite una email di recupero.
+Dati richiesti per la registrazione:
+
+Email: Unica per ogni utente.
+Username: Unico e tra 4-20 caratteri.
+Nome e Cognome: In due campi distinti.
+Password: Almeno 8 caratteri, con una maiuscola, un numero e un carattere speciale.
+Sesso: Maschio/Femmina.
+Ruolo: Studente o Insegnante.
+Data di Nascita: Campo opzionale (formato GG/MM/AAAA).
+2. Homepage dell'App
+L'utente, una volta autenticato, visualizza:
+
+Profilo parziale con immagine del profilo, username e statistiche principali.
+Pulsante di gioco per entrare nella modalità di sfide.
+Pulsante Gestione Deck (solo per insegnanti) per creare e gestire quiz.
+Pulsante Info sviluppatori con dettagli sul team di sviluppo.
+3. Profilo Utente
+All'interno della schermata Profilo, gli utenti trovano:
+
+Studente:
+
+Partite giocate, vittorie, percentuale di vittorie, punteggio medio per partita, record personale, argomenti di forza e di miglioramento.
+Insegnante:
+
+Quiz creati, domande inserite, percentuale di risposte corrette degli studenti, domande più difficili e facili, quiz più giocato.
+Possibilità di modificare l'immagine del profilo, caricando una foto o utilizzando un filtro cartoon.
+
+4. Gestione QuizChallenge (Solo Insegnanti)
+Gli insegnanti possono:
+
+Creare, modificare ed eliminare QuizChallenge (quiz con più topics).
+Ogni topic contiene domande a risposta multipla (una corretta e tre errate).
+Modificare deck, topics e card.
+5. Modalità di Gioco
+Due modalità disponibili:
+
+Single Player:
+
+L'utente seleziona il tempo di risposta e il numero di domande per fase.
+Il gioco è suddiviso in fasi, ognuna con una selezione casuale del topic.
+Multiplayer (max 4 giocatori):
+
+Un giocatore crea una stanza con un codice univoco.
+Gli altri giocatori entrano tramite il codice.
+Ogni fase ha un giocatore che seleziona il topic.
+Al termine, i risultati vengono registrati nelle statistiche degli studenti e aggiornano le metriche dell'insegnante.
+
+6. Info Sugli Sviluppatori
+Dettagli sul team di sviluppo, email di supporto, social media e tecnologie utilizzate.
+Versione dell'app e licenza (open-source o proprietaria).
+7. Struttura dei Dati
+Deck:
+
+Ogni deck rappresenta una materia d'esame e contiene più topics.
+Topic:
+
+Ogni topic rappresenta un capitolo e contiene diverse card (domande).
+Card:
+
+Una card è una domanda con quattro risposte multiple (una corretta).
+8. Backend - Server Flask
+Obiettivo: Creare un server Flask per gestire le operazioni CRUD per utenti, deck, topics, e card, nonché la gestione delle stanze multiplayer.
+
+Tecnologie:
+
+Flask per il backend.
+MongoDB per la gestione dei dati.
+Minio per l'archiviazione delle immagini del profilo.
+API CRUD:
+
+Registrazione/Login tramite Firebase Authentication.
+Decks, Topics e Cards: Creazione, lettura, aggiornamento e cancellazione.
+Multiplayer: Gestione delle stanze di gioco.
+9. Docker Compose
+Configurazione dell'infrastruttura tramite Docker Compose, che gestisce i servizi:
+
+Flask: Server backend.
+MongoDB: Database per utenti, deck, topics e card.
+Minio: Gestione delle immagini del profilo.
+10. Funzionalità di Multiplayer
+Gestione Room Multiplayer:
+
+Creazione stanza: Un codice univoco per ogni stanza.
+Entrata in stanza: Gli utenti si uniscono usando il codice.
+Monitoraggio: Stato della partita (attesa, in corso, terminata).
+Flusso Multiplayer:
+
+Registrazione/Login con Firebase Authentication.
+Creazione di una stanza multiplayer.
+Partecipazione e inizio della partita.
+Risultati finali registrati e statistiche aggiornate.
+11. Modifiche Proposte
+Autenticazione con Firebase: Utilizzo di Firebase per semplificare la gestione dell'autenticazione (email/password, Google, Facebook).
+Gestione Room Multiplayer: Creazione, accesso e monitoraggio delle stanze di gioco tramite un codice univoco.
+Con queste funzionalità, TriviaSapienza diventa una piattaforma completa per l'apprendimento interattivo e il gioco educativo, in grado di gestire diverse modalità di sfida per gli utenti e di permettere agli insegnanti di creare e monitorare quiz personalizzati.

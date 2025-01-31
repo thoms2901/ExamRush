@@ -1,0 +1,16 @@
+my_project/
+│── api/                      # Cartella dell'API Flask
+│   ├── app.py                # Il file principale della tua API
+│   ├── requirements.txt       # Le dipendenze di Flask
+│   ├── Dockerfile             # Dockerfile per il server Flask
+│── scripts/                   # Script per inizializzare MinIO
+│   ├── init_minio.py          # Script per caricare le immagini su MinIO
+│── minio_data/                # Cartella con immagini predefinite
+│   ├── image1.jpg
+│   ├── image2.jpg
+│   ├── ...
+│── init_mongo.js              # Script per popolare MongoDB
+│── docker-compose.yml         # Configurazione Docker
+│── .env                       # Variabili d'ambiente
+│── docker_commands.txt        # Comandi docker
+│── project.txt        # Questo file
