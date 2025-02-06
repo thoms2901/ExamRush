@@ -11,8 +11,6 @@ import androidx.compose.ui.Modifier
 import com.example.examrush.ui.theme.ExamRushTheme
 import androidx.compose.ui.viewinterop.AndroidView
 
-
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,12 +20,19 @@ class MainActivity : ComponentActivity() {
                 AndroidView(
                     factory = { context ->
                         WebView(context).apply {
+                            // Abilita JavaScript e altre impostazioni
                             settings.javaScriptEnabled = true
                             settings.domStorageEnabled = true
                             settings.cacheMode = WebSettings.LOAD_DEFAULT
+                            settings.setAllowUniversalAccessFromFileURLs(true)
 
-                            webViewClient = WebViewClient() // Mantiene la navigazione in WebView
-                            loadUrl("file:///android_asset/pages/index.html") // Carica una pagina di test
+                            // Configura la WebViewClient per mantenere la navigazione all'interno della WebView
+                            webViewClient = WebViewClient()
+                            loadUrl("file:///android_asset/pages/index.html") // Carica il file HTML
+
+                            // Aggiungi l'interfaccia per JavaScript
+                            val jsInterface = JavaScriptInterface(context)
+                            addJavascriptInterface(jsInterface, "AndroidInterface") // Interfaccia tra JavaScript e Kotlin
                         }
                     },
                     modifier = Modifier.fillMaxSize()

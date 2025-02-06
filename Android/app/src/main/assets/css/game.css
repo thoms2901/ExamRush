@@ -1,0 +1,30 @@
+/* game.css - CSS specifico per la modalità di gioco */
+#game-container {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+#question {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#answers {
+    display: flex;
+    flex-direction: column;
+}
+
+button.answer {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+/* Timer */
+#timer {
+    font-size: 2rem;
+    color: red;
+    text-align: center;
+    margin-top: 20px;
+}

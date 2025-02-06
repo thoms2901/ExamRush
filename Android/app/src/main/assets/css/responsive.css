@@ -1,0 +1,29 @@
+/* responsive.css - Stili responsivi per dispositivi mobili */
+@media (max-width: 768px) {
+    header {
+        padding: 10px 0;
+    }
+
+    header nav ul {
+        display: block;
+        text-align: center;
+    }
+
+    header nav ul li {
+        display: inline-block;
+        margin: 5px;
+    }
+
+    #profile-info {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #game-container {
+        padding: 15px;
+    }
+
+    .deck-item {
+        width: 100%;
+    }
+}

@@ -1,0 +1,29 @@
+/* deck.css - CSS specifico per la gestione dei deck */
+#deck-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.deck-item {
+    background-color: #3498db;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    width: calc(33.33% - 20px);
+    box-sizing: border-box;
+}
+
+.deck-item h3 {
+    font-size: 1.5rem;
+}
+
+.deck-item button {
+    margin-top: 10px;
+    background-color: #2980b9;
+}
+
+.deck-item button:hover {
+    background-color: #1f6383;
+}

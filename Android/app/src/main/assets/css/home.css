@@ -1,0 +1,25 @@
+/* home.css - CSS specifico per la home */
+#profile h2 {
+    color: #2980b9;
+    text-align: center;
+}
+
+#profile p {
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+button {
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* Stile per il banner di benvenuto */
+#welcome-banner {
+    background-image: url('assets/images/welcome-banner.jpg');
+    background-size: cover;
+    color: white;
+    text-align: center;
+    padding: 30px;
+    margin-bottom: 20px;
+}

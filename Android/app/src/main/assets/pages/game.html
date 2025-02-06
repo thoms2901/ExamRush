@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gioco - ExamRush</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/game.css">
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="profile.html">Profilo</a></li>
+            <li><a href="game.html">Gioco</a></li>
+            <li><a href="deck.html">Gestione Deck</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section id="game-container">
+    <h2>Inizia la Sfida!</h2>
+    <div id="question">
+        <p>Qual è la capitale della Francia?</p>
+    </div>
+    <div id="answers">
+        <button class="answer">Roma</button>
+        <button class="answer">Madrid</button>
+        <button class="answer">Parigi</button>
+        <button class="answer">Berlino</button>
+    </div>
+    <div id="timer">Tempo rimasto: 30s</div>
+</section>
+
+<footer>
+    <p>&copy; 2025 ExamRush. Tutti i diritti riservati.</p>
+</footer>
+
+<script>
+    // Funzione per gestire il timer e la logica del gioco
+    let timer = 30;
+    const timerElement = document.getElementById("timer");
+
+    setInterval(() => {
+        if (timer > 0) {
+            timer--;
+            timerElement.textContent = `Tempo rimasto: ${timer}s`;
+        }
+    }, 1000);
+</script>
+</body>
+</html>

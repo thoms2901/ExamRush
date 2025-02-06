@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - ExamRush</title>
+    <title>Gestione Deck - ExamRush</title>
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/deck.css">
 </head>
 <body>
 <header>
@@ -19,17 +19,23 @@
     </nav>
 </header>
 
-<section id="welcome-banner">
-    <h1>Benvenuto in ExamRush</h1>
-    <p>Preparati a sfidare i tuoi amici e a migliorare le tue competenze!</p>
-</section>
-
-<section id="profile">
-    <h2>Ciao, <span id="username">[Username]</span></h2>
-    <p>Punteggio medio: 85%</p>
-    <p>Partite giocate: 15</p>
-    <button onclick="location.href='game.html'">Inizia una Sfida</button>
-    <button onclick="location.href='deck.html'">Gestisci i tuoi Deck</button>
+<section id="deck-list">
+    <h2>I tuoi Decks</h2>
+    <div class="deck-item">
+        <h3>Matematica</h3>
+        <button>Modifica</button>
+        <button>Elimina</button>
+    </div>
+    <div class="deck-item">
+        <h3>Storia</h3>
+        <button>Modifica</button>
+        <button>Elimina</button>
+    </div>
+    <div class="deck-item">
+        <h3>Geografia</h3>
+        <button>Modifica</button>
+        <button>Elimina</button>
+    </div>
 </section>
 
 <footer>

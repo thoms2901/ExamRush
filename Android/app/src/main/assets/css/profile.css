@@ -1,0 +1,30 @@
+/* profile.css - CSS specifico per il profilo utente */
+#profile-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+#profile-info div {
+    width: 48%;
+}
+
+#profile-info img {
+    width: 100px;
+    border-radius: 50%;
+}
+
+#statistics {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+#statistics ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#statistics ul li {
+    margin-bottom: 10px;
+}

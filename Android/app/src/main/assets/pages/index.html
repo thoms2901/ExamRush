@@ -3,12 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExamRush</title>
+    <title>Accedi o Registrati - ExamRush</title>
     <link rel="stylesheet" href="../css/styles.css">
-    <script src="../js/main.js" defer></script>
+    <link rel="stylesheet" href="../css/index.css">
 </head>
 <body>
-<h1>Benvenuto su ExamRush!</h1>
-<button onclick="navigateTo('about.html')">Vai alla Pagina About</button>
+<header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="register.html">Registrazione</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section id="intro">
+    <h1>Benvenuto su ExamRush</h1>
+    <p>Preparati a sfidare te stesso e i tuoi amici nel miglior gioco di apprendimento!</p>
+    <p>Accedi al tuo account o crea un nuovo account per iniziare a giocare.</p>
+    <div class="buttons">
+        <button onclick="location.href='login.html'">Accedi</button>
+        <button onclick="location.href='register.html'">Registrati</button>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2025 ExamRush. Tutti i diritti riservati.</p>
+</footer>
 </body>
 </html>

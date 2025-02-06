@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ExamRush</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/login.css">
+    <script src="../js/login.js" defer></script>
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="register.html">Registrazione</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section id="login-form">
+    <h2>Accedi al tuo Account</h2>
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="username">Nome utente</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="button" onclick="handleLogin()">Accedi</button>
+    </form>
+    <p>Non hai un account? <a href="register.html">Registrati qui</a></p>
+</section>
+
+<footer>
+    <p>&copy; 2025 ExamRush. Tutti i diritti riservati.</p>
+</footer>
+</body>
+</html>
