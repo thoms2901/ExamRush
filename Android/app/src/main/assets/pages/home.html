@@ -6,6 +6,7 @@
     <title>Home - ExamRush</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/home.css">
+    <script src="../js/main.js" defer></script>
 </head>
 <body>
 <header>
@@ -37,3 +38,16 @@
 </footer>
 </body>
 </html>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    try {
+        var username = AndroidInterface.getUser(); // Ottiene il nome utente da Kotlin
+        document.getElementById("username").textContent = username || "Ospite"; // Inserisce il nome utente o un fallback
+    } catch (e) {
+        console.error("Errore durante il recupero del nome utente: " + e.message);
+        document.getElementById("username").textContent = "Ospite";
+    }
+});
+
+</script>

@@ -3,13 +3,11 @@ function handleLogin() {
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
 
-    // Chiama la funzione Kotlin per gestire la login tramite l'interfaccia AndroidInterface
     try {
-
         var result = AndroidInterface.onLogin(username, password);
         if (result === "success") {
-            showMessage('Login riuscito!');
-            window.location.href = 'index.html';  // Redirigi alla home
+            //showMessage('Login riuscito!');
+            window.location.href = 'home.html';  // Redirigi alla home
         } else {
             showMessage('Login fallito. Controlla username e password.');
         }
@@ -26,7 +24,7 @@ function handleRegister() {
     var confirmPassword = document.getElementById('confirm-password').value;
 
     if (password !== confirmPassword) {
-        alert('Le password non corrispondono.');
+        showMessage('Le password non corrispondono.');
         return;
     }
 
@@ -43,3 +41,4 @@ function handleRegister() {
         showMessage("Errore durante la chiamata Kotlin: " + e.message);
     }
 }
+

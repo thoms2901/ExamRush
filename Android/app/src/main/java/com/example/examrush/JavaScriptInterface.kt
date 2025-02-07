@@ -27,4 +27,9 @@ class JavaScriptInterface(private val context: Context) {
             "failure"
         }
     }
+
+    @JavascriptInterface
+    fun getUser(): String {
+        return "Test"
+    }
 }
