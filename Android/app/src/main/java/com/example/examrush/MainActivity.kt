@@ -8,36 +8,39 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
-import com.example.examrush.ui.theme.ExamRushTheme
 import androidx.compose.ui.viewinterop.AndroidView
+import com.example.examrush.ui.theme.ExamRushTheme
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        auth = FirebaseAuth.getInstance()
 
         setContent {
             ExamRushTheme {
                 AndroidView(
-                    factory = { context ->
-                        WebView(context).apply {
-                            // Abilita JavaScript e altre impostazioni
-                            settings.javaScriptEnabled = true
-                            settings.domStorageEnabled = true
-                            settings.cacheMode = WebSettings.LOAD_DEFAULT
-                            settings.setAllowUniversalAccessFromFileURLs(true)
-
-                            // Configura la WebViewClient per mantenere la navigazione all'interno della WebView
-                            webViewClient = WebViewClient()
-                            loadUrl("file:///android_asset/pages/index.html") // Carica il file HTML
-
-                            // Aggiungi l'interfaccia per JavaScript
-                            val jsInterface = JavaScriptInterface(context)
-                            addJavascriptInterface(jsInterface, "AndroidInterface") // Interfaccia tra JavaScript e Kotlin
-                        }
-                    },
+                    factory = { createWebView() },
                     modifier = Modifier.fillMaxSize()
                 )
             }
+        }
+    }
+
+    private fun createWebView(): WebView {
+        return WebView(this).apply {
+            settings.javaScriptEnabled = true
+            settings.domStorageEnabled = true
+            settings.cacheMode = WebSettings.LOAD_DEFAULT
+
+            webViewClient = WebViewClient()
+
+            addJavascriptInterface(JavaScriptInterface(context, this), "Android")
+
+            loadUrl("file:///android_asset/pages/index.html")
         }
     }
 }
