@@ -3,33 +3,46 @@ package com.example.examrush
 import android.content.Context
 import android.util.Log
 import android.webkit.JavascriptInterface
+import android.webkit.WebView
+import com.google.firebase.auth.FirebaseAuth
 
-class JavaScriptInterface(private val context: Context) {
+class JavaScriptInterface(private val context: Context, private val webView: WebView) {
 
-    @JavascriptInterface
-    fun onLogin(username: String, password: String): String {
-        Log.d("Login", "Login attempt: $username with password $password")
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
-        return if (username == "test" && password == "password") {
-            "success"
-        } else {
-            "failure"
+    private fun executeAuthRequest(action: String, email: String, password: String) {
+        val task = when (action) {
+            "login" -> auth.signInWithEmailAndPassword(email, password)
+            "register" -> auth.createUserWithEmailAndPassword(email, password)
+            else -> return
+        }
+
+        task.addOnCompleteListener { taskResult ->
+            val result = if (taskResult.isSuccessful) "success" else "failure"
+            sendResultToWeb(action, result)
         }
     }
 
     @JavascriptInterface
-    fun onRegister(username: String, email: String, password: String): String {
-        Log.d("Registration", "Registration attempt: $username, $email with password $password")
+    fun onLogin(email: String, password: String) {
+        Log.d("Auth", "Tentativo di login: $email")
+        executeAuthRequest("login", email, password)
+    }
 
-        return if (password.length >= 6) {
-            "success"
-        } else {
-            "failure"
-        }
+    @JavascriptInterface
+    fun onRegister(email: String, password: String) {
+        Log.d("Auth", "Tentativo di registrazione: $email")
+        executeAuthRequest("register", email, password)
     }
 
     @JavascriptInterface
     fun getUser(): String {
-        return "Test"
+        return auth.currentUser?.email ?: "Nessun utente loggato"
+    }
+
+    private fun sendResultToWeb(action: String, result: String) {
+        webView.post {
+            webView.evaluateJavascript("onAuthResult('$action', '$result')", null)
+        }
     }
 }
