@@ -42,7 +42,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
     try {
-        var username = AndroidInterface.getUser(); // Ottiene il nome utente da Kotlin
+        var username = Android.getUser(); // Ottiene il nome utente da Kotlin
         document.getElementById("username").textContent = username || "Ospite"; // Inserisce il nome utente o un fallback
     } catch (e) {
         console.error("Errore durante il recupero del nome utente: " + e.message);
