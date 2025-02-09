@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "486971546205",
+    "project_id": "examrush-2d84f",
+    "storage_bucket": "examrush-2d84f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486971546205:android:6cbdfd05aefae67d70cbb4",
+        "android_client_info": {
+          "package_name": "com.example.examrush"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7YLq8_3Jq41-SttKTrDDIHuywjDSu3x8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
