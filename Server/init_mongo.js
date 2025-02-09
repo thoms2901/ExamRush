@@ -1,5 +1,6 @@
 db = db.getSiblingDB("mydatabase");
 
+// Inserimento immagini
 db.images.insertMany([
   { filename: "image1.jpg", url: "uploads/image1.jpg" },
   { filename: "image2.jpg", url: "uploads/image2.jpg" },
@@ -10,4 +11,15 @@ db.images.insertMany([
   { filename: "image7.jpg", url: "uploads/image7.jpg" }
 ]);
 
-print("✅ Database inizializzato con immagini!");
+// Inserimento utente test
+db.users.insertOne({
+  email: "test@test.it",
+  name: "Test",
+  surname: "Test",
+  score: 120,
+  role: "student",
+  average_score: 0,
+  played_games: 0
+});
+
+print("✅ Database inizializzato con immagini e utente test!");

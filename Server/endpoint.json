@@ -3,45 +3,18 @@
       "register": {
         "endpoint": "/api/register",
         "method": "POST",
-        "description": "Registra un nuovo utente (studente o docente)",
+        "description": "Registra un nuovo utente",
         "body": {
           "username": "string",
           "password": "string",
           "email": "string",
-          "role": "student | teacher"
+          "role": "student",
+          "average_score": 0,
+          "played_games": 0
         }
-      },
-      "login": {
-        "endpoint": "/api/login",
-        "method": "POST",
-        "description": "Effettua il login dell'utente e restituisce un token di autenticazione",
-        "body": {
-          "username": "string",
-          "password": "string"
-        },
-        "response": {
-          "token": "jwt_token"
-        }
-      },
-      "logout": {
-        "endpoint": "/api/logout",
-        "method": "POST",
-        "description": "Effettua il logout dell'utente",
-        "authentication": "Bearer token"
       }
     },
     "decks": {
-      "create": {
-        "endpoint": "/api/decks",
-        "method": "POST",
-        "description": "Crea un nuovo deck (materia di esame)",
-        "body": {
-          "title": "string",
-          "description": "string",
-          "teacher_id": "teacher_id"
-        },
-        "authentication": "Bearer token (solo per docenti)"
-      },
       "getAll": {
         "endpoint": "/api/decks",
         "method": "GET",
@@ -50,145 +23,65 @@
       "getById": {
         "endpoint": "/api/decks/{deck_id}",
         "method": "GET",
-        "description": "Restituisce le informazioni di un deck specifico"
+        "description": "Restituisce le informazioni di un deck specifico, tra cui il numero di carte"
       },
       "update": {
         "endpoint": "/api/decks/{deck_id}",
         "method": "PUT",
-        "description": "Aggiorna un deck esistente",
+        "description": "Aggiorna il numero di persone che hanno giocato",
         "body": {
-          "title": "string",
-          "description": "string"
-        },
-        "authentication": "Bearer token (solo per docenti)"
-      },
-      "delete": {
-        "endpoint": "/api/decks/{deck_id}",
-        "method": "DELETE",
-        "description": "Elimina un deck specifico",
-        "authentication": "Bearer token (solo per docenti)"
-      }
-    },
-    "topics": {
-      "create": {
-        "endpoint": "/api/decks/{deck_id}/topics",
-        "method": "POST",
-        "description": "Crea un nuovo topic (capitolo) per un determinato deck",
-        "body": {
-          "title": "string",
-          "description": "string"
-        },
-        "authentication": "Bearer token (solo per docenti)"
-      },
-      "getAll": {
-        "endpoint": "/api/decks/{deck_id}/topics",
-        "method": "GET",
-        "description": "Restituisce la lista dei topics per un determinato deck"
-      },
-      "getById": {
-        "endpoint": "/api/decks/{deck_id}/topics/{topic_id}",
-        "method": "GET",
-        "description": "Restituisce le informazioni di un topic specifico"
-      },
-      "update": {
-        "endpoint": "/api/decks/{deck_id}/topics/{topic_id}",
-        "method": "PUT",
-        "description": "Aggiorna un topic esistente",
-        "body": {
-          "title": "string",
-          "description": "string"
-        },
-        "authentication": "Bearer token (solo per docenti)"
-      },
-      "delete": {
-        "endpoint": "/api/decks/{deck_id}/topics/{topic_id}",
-        "method": "DELETE",
-        "description": "Elimina un topic specifico",
-        "authentication": "Bearer token (solo per docenti)"
+          "number": 1
+        }
       }
     },
     "cards": {
-      "create": {
-        "endpoint": "/api/decks/{deck_id}/topics/{topic_id}/cards",
-        "method": "POST",
-        "description": "Crea una nuova card (domanda) all'interno di un topic di un deck",
-        "body": {
-          "question": "string",
-          "answers": ["string", "string", "string", "string"],
-          "correct_answer": "string"
-        },
-        "authentication": "Bearer token (solo per docenti)"
-      },
       "getAll": {
-        "endpoint": "/api/decks/{deck_id}/topics/{topic_id}/cards",
+        "endpoint": "/api/decks/{deck_id}/cards",
         "method": "GET",
-        "description": "Restituisce tutte le card per un determinato topic"
+        "description": "Restituisce tutte le card di un deck"
       },
       "getById": {
-        "endpoint": "/api/decks/{deck_id}/topics/{topic_id}/cards/{card_id}",
+        "endpoint": "/api/decks/{deck_id}/cards/{card_id}",
         "method": "GET",
         "description": "Restituisce una card specifica"
       },
-      "update": {
-        "endpoint": "/api/decks/{deck_id}/topics/{topic_id}/cards/{card_id}",
-        "method": "PUT",
-        "description": "Aggiorna una card esistente",
-        "body": {
-          "question": "string",
-          "answers": ["string", "string", "string", "string"],
-          "correct_answer": "string"
-        },
-        "authentication": "Bearer token (solo per docenti)"
-      },
-      "delete": {
-        "endpoint": "/api/decks/{deck_id}/topics/{topic_id}/cards/{card_id}",
-        "method": "DELETE",
-        "description": "Elimina una card specifica",
-        "authentication": "Bearer token (solo per docenti)"
-      }
-    },
-    "game": {
-      "createRoom": {
-        "endpoint": "/api/rooms",
-        "method": "POST",
-        "description": "Crea una nuova stanza di gioco per la modalità multiplayer",
-        "body": {
-          "room_code": "string"
-        },
-        "authentication": "Bearer token"
-      },
-      "joinRoom": {
-        "endpoint": "/api/rooms/{room_code}/join",
-        "method": "POST",
-        "description": "Unisciti a una stanza di gioco esistente tramite il codice della stanza",
-        "authentication": "Bearer token"
-      },
-      "startRoom": {
-        "endpoint": "/api/rooms/{room_code}/start",
-        "method": "POST",
-        "description": "Inizia la partita nella stanza",
-        "authentication": "Bearer token"
-      },
-      "getRoomDetails": {
-        "endpoint": "/api/rooms/{room_code}",
+      "chechById": {
+        "endpoint": "/api/decks/{deck_id}/cards/{card_id}/solution",
         "method": "GET",
-        "description": "Ottieni i dettagli della stanza (partecipanti, stato, ecc.)",
-        "authentication": "Bearer token"
+        "description": "Restituisce la risposta di una card specifica"
       }
     },
     "profile": {
+      "getProfileImage": {
+        "endpoint": "/api/users/{user_id}/profile-image",
+        "method": "GET",
+        "description": "Restituisce l'immagine del profilo dell'utente"
+      },
       "uploadProfileImage": {
         "endpoint": "/api/users/{user_id}/profile-image",
         "method": "POST",
         "description": "Carica una nuova immagine del profilo per l'utente",
-        "body": "Immagine binaria (multipart/form-data)",
-        "authentication": "Bearer token"
+        "body": "Immagine binaria (multipart/form-data)"
       },
-      "getProfileImage": {
+      "updateProfileImage": {
         "endpoint": "/api/users/{user_id}/profile-image",
+        "method": "PUT",
+        "description": "Aggiorna l'immagine del profilo dell'utente"
+      },
+      "deleteProfileImage": {
+        "endpoint": "/api/users/{user_id}/profile-image",
+        "method": "DELETE",
+        "description": "Elimina l'immagine del profilo dell'utente"
+      },
+      "getUserInfo": {
+        "endpoint": "/api/users/{user_id}",
         "method": "GET",
-        "description": "Restituisce l'immagine del profilo dell'utente",
-        "authentication": "Bearer token"
+        "description": "Ritorna le informazioni dell'utente"
+      },
+      "updateUserInfo": {
+        "endpoint": "/api/users/{user_id}",
+        "method": "PUT",
+        "description": "Aggiorna le informazioni dell'utente"
       }
     }
   }

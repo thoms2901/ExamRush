@@ -53,6 +53,7 @@ dependencies {
     implementation("androidx.webkit:webkit:1.9.0")
     implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
     implementation(libs.firebase.auth)
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

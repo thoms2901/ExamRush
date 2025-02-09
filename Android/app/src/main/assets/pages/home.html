@@ -41,13 +41,19 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-    try {
-        var username = Android.getUser(); // Ottiene il nome utente da Kotlin
-        document.getElementById("username").textContent = username || "Ospite"; // Inserisce il nome utente o un fallback
-    } catch (e) {
-        console.error("Errore durante il recupero del nome utente: " + e.message);
-        document.getElementById("username").textContent = "Ospite";
-    }
-});
+        try {
+            var userInfoJSON = Android.getUserInfo(); // Ottiene il JSON dall'interfaccia Kotlin
+            var userInfo = JSON.parse(userInfoJSON); // Converte il JSON in oggetto
 
+            // Aggiorna i dati nel profilo
+            document.getElementById("username").textContent = userInfo.name || "Ospite";
+            document.getElementById("average-score").textContent = userInfo.average_score + "%" || "N/D";
+            document.getElementById("played-games").textContent = userInfo.played_games || "N/D";
+        } catch (e) {
+            console.error("Errore durante il recupero delle informazioni utente: " + e.message);
+            document.getElementById("username").textContent = "Ospite";
+            document.getElementById("average-score").textContent = "N/D";
+            document.getElementById("played-games").textContent = "N/D";
+        }
+    });
 </script>
