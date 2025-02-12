@@ -57,13 +57,13 @@
     });
 
     function changeProfilePic() {
-        Android.pickImageFromGallery(); // Call the Kotlin method to pick image
+        Android.pickImageFromGallery(); // Call Kotlin function
     }
 
-    // Callback to handle the image picked in Kotlin
+    // Callback to update profile image
     function onImagePicked(imagePath) {
-        var profileImg = document.getElementById("profile-img");
-        profileImg.src = imagePath; // Update the image element with the selected image
+        showMessage("Base64 Image Received:"); // Debugging
+        document.getElementById("profile-img").src = imagePath; // Update image
     }
 
 
