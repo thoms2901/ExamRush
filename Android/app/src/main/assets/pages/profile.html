@@ -56,6 +56,16 @@
         }
     });
 
+    function changeProfilePic() {
+        Android.pickImageFromGallery(); // Call the Kotlin method to pick image
+    }
+
+    // Callback to handle the image picked in Kotlin
+    function onImagePicked(imagePath) {
+        var profileImg = document.getElementById("profile-img");
+        profileImg.src = imagePath; // Update the image element with the selected image
+    }
+
 
 </script>
 </body>

@@ -1,7 +1,10 @@
 package com.example.examrush
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.provider.MediaStore
 import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
@@ -126,6 +129,17 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
                 Log.e("Auth", "Errore nell'invio del risultato a WebView: ${e.message}")
             }
         }
+    }
+
+    // Method to trigger the image picker
+    @JavascriptInterface
+    fun pickImageFromGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        (context as Activity).startActivityForResult(intent, IMAGE_PICK_REQUEST_CODE)
+    }
+
+    companion object {
+        const val IMAGE_PICK_REQUEST_CODE = 1001
     }
 
 }
