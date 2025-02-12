@@ -48,7 +48,7 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
     }
 
     private fun fetchUserInfo(email: String) {
-        val url = "http://192.168.1.200:5000/api/users"
+        val url = "http://192.168.0.10:5000/api/users"
         val json = JSONObject().put("email", email).toString()
 
         val mediaType = "application/json".toMediaType()
@@ -90,6 +90,7 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
         val editor = sharedPreferences.edit()
         editor.putString("user_email", userInfo.getString("email"))
         editor.putString("user_name", userInfo.getString("name"))
+        editor.putString("image", userInfo.getString("image"))
 
         // Controlla se "role" esiste, altrimenti metti un valore predefinito
         val role = if (userInfo.has("role")) userInfo.getString("role") else "user"
@@ -105,8 +106,9 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
         val email = sharedPreferences.getString("user_email", "Nessun utente loggato") ?: "Nessun utente loggato"
         val name = sharedPreferences.getString("user_name", "N/A") ?: "N/A"
         val role = sharedPreferences.getString("user_role", "N/A") ?: "N/A"
+        val image = sharedPreferences.getString("image", "../images/user.png") ?: "../images/user.png"
 
-        return JSONObject().put("email", email).put("name", name).put("role", role).toString()
+        return JSONObject().put("email", email).put("name", name).put("role", role).put("image", image).toString()
     }
 
     @JavascriptInterface
@@ -125,4 +127,5 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
             }
         }
     }
+
 }

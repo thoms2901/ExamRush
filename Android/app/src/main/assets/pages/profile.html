@@ -23,14 +23,14 @@
 <section id="profile-info">
     <div>
         <h2>Il tuo Profilo</h2>
-        <img src="assets/images/default-avatar.jpg" alt="Foto Profilo" id="profile-img">
+        <img alt="Foto Profilo" id="profile-img">
         <button onclick="changeProfilePic()">Cambia Foto</button>
     </div>
     <div id="statistics">
         <h3>Statistiche</h3>
         <ul>
             <li>Partite giocate: 15</li>
-            <li>Vittorie: 10</li>
+            <li >Vittorie: 10</li>
             <li>Percentuale di vittorie: 67%</li>
             <li>Punteggio medio per partita: 85</li>
         </ul>
@@ -42,9 +42,21 @@
 </footer>
 
 <script>
-    function changeProfilePic() {
-        alert("Funzionalità non implementata.");
-    }
+    document.addEventListener("DOMContentLoaded", function() {
+        try {
+            var userInfoJSON = Android.getUserInfo(); // Ottiene il JSON dall'interfaccia Kotlin
+            var userInfo = JSON.parse(userInfoJSON); // Converte il JSON in oggetto
+
+            // Aggiorna i dati nel profilo
+            //showMessage(JSON.stringify(userInfo, null, 2));
+            document.getElementById("profile-img").src = userInfo.image;
+
+        } catch (e) {
+            console.error("Errore durante il recupero delle informazioni utente: " + e.message);
+        }
+    });
+
+
 </script>
 </body>
 </html>
