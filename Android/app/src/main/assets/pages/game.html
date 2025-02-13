@@ -31,15 +31,8 @@
     <p id="score">Punteggio: 0</p>
 </main>
 <script>
-    const quizData = {
-        title: 'DevOps Fundamentals',
-        cards: [
-            { question: 'What does CI/CD stand for in DevOps?', answers: ['Continuous Integration/Continuous Deployment', 'Code Integration/Code Deployment', 'Continuous Inspection/Continuous Delivery', 'Code Inspection/Code Deployment'], correct_answer: 'Continuous Integration/Continuous Deployment' },
-            { question: 'Which tool is commonly used for containerization in DevOps?', answers: ['Docker', 'Jenkins', 'Kubernetes', 'Ansible'], correct_answer: 'Docker' },
-            { question: 'What is the primary goal of DevOps?', answers: ['To increase the number of software releases', 'To improve collaboration between development and operations teams', 'To reduce the cost of infrastructure', 'To automate all testing processes'], correct_answer: 'To improve collaboration between development and operations teams' },
-            { question: 'Which of the following is a configuration management tool?', answers: ['Jenkins', 'Terraform', 'Ansible', 'Prometheus'], correct_answer: 'Ansible' }
-        ]
-    };
+    const quizDataJSON = Android.getDeck();
+    const quizData = JSON.parse(quizDataJSON);
 
     const totalTurns = Math.floor(quizData.cards.length * 0.66);
     let currentTurn = 0;

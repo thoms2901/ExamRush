@@ -58,6 +58,10 @@
 
             // Add click event
                 deckItem.addEventListener("click", () => {
+                  //showMessage(`You clicked on: ${deck.title}`);
+                  let base64Title = btoa(deck.title);
+                  //showMessage(`You clicked on: ${base64Title}`);
+                  Android.getDeckByTitle(base64Title);
                   window.location.href = "game.html";
                 });
 

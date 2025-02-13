@@ -23,10 +23,11 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
         context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
 
     private val client = OkHttpClient() // OkHttp client per richieste HTTP
-
-    var deckJson : String = ""// Decks in ArrayJSON
     val urltarget: String = "http://192.168.0.10:5000"
 
+
+    var deckJson : String = ""// Decks in ArrayJSON
+    var currentDeck : String = "" // Cards in JSon
 
 
     private fun executeAuthRequest(action: String, email: String, password: String) {
@@ -155,7 +156,7 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
 
     @JavascriptInterface
     fun getAllDecks(): String{
-        Log.d("Second JSONdeck", deckJson)
+        Log.d("JSONdeck", deckJson)
         return deckJson
     }
 
@@ -196,6 +197,50 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
 
     }
 
+    @JavascriptInterface
+    fun getDeckByTitle(base64Title: String) {
+        Log.d("DeckByTitle", "Sono dentro")
+        val url = urltarget + "/api/decks/" + base64Title
+
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("FetchDecksByTitle", "Error in request: ${e.message}")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (!response.isSuccessful) {
+                    Log.e("FetchDecksByTitle", "HTTP Error: ${response.code}")
+                    return
+                }
+
+                val responseBody = response.body?.string()
+                if (responseBody.isNullOrEmpty()) {
+                    Log.e("FetchDecksByTitle", "Empty response body")
+                    return
+                }
+
+                try {
+                    val cDeck = JSONObject(responseBody)
+                    currentDeck = cDeck.toString()
+                    Log.d("FetchDecksByTitle", "Decks fetched: $currentDeck")
+                } catch (e: Exception) {
+                    Log.e("FetchDecksByTitle", "Error parsing JSON: ${e.message}")
+                }
+            }
+        })
+
+    }
+
+    @JavascriptInterface
+    fun getDeck(): String {
+        Log.d("CurrentDeck", currentDeck)
+        return currentDeck
+    }
 
 
 }

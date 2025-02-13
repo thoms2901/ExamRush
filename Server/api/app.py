@@ -1,4 +1,5 @@
 from flask import *
+import base64
 from pymongo import MongoClient
 import os
 
@@ -47,7 +48,6 @@ def get_user_by_email():
 
 
 # Restituisce tutti i deck disponibili
-
 @app.route("/api/decks", methods=["GET"])
 def get_decks():
     # Fetch all decks from the MongoDB collection with specific fields
@@ -56,6 +56,14 @@ def get_decks():
         {"_id": 0, "title": 1, "description": 1, "teacher_id": 1}  # Include only these fields
     ))
     return jsonify(decks)
+
+# Restituituisci un deck dal titolo:
+@app.route("/api/decks/<deck_id>", methods=["GET"])
+def get_deck_by_title(deck_id):
+    decoded_bytes = base64.b64decode(deck_id)
+    title = decoded_bytes.decode('utf-8')
+    deck = decks_collection.find_one({"title": title}, {"_id": 0})
+    return jsonify(deck) if deck else (jsonify({"error": "Deck non trovato"}), 404)
 
 
 
