@@ -1,4 +1,37 @@
 /* deck.css - CSS specifico per la gestione dei deck */
+#deck-management {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#search-bar {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+#search-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#search-button {
+    padding: 10px 20px;
+    background-color: #34495e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#search-button:hover {
+    background-color: #2980b9;
+}
+
 #deck-list {
     display: flex;
     flex-wrap: wrap;
@@ -10,20 +43,37 @@
     color: white;
     padding: 15px;
     border-radius: 10px;
-    text-align: center;
+    text-align: left;
     width: calc(33.33% - 20px);
     box-sizing: border-box;
 }
 
 .deck-item h3 {
     font-size: 1.5rem;
+    margin-bottom: 10px;
 }
 
-.deck-item button {
-    margin-top: 10px;
-    background-color: #2980b9;
+.deck-item p {
+    margin: 5px 0;
 }
 
-.deck-item button:hover {
-    background-color: #1f6383;
+/* Responsive Design */
+@media (max-width: 768px) {
+    .deck-item {
+        width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 480px) {
+    .deck-item {
+        width: 100%;
+    }
+
+    #search-bar {
+        flex-direction: column;
+    }
+
+    #search-button {
+        width: 100%;
+    }
 }

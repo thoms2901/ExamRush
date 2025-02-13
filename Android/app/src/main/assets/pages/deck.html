@@ -11,36 +11,100 @@
 <body>
 <header>
     <nav>
+
         <ul>
             <li><a href="home.html">Home</a></li>
             <li><a href="profile.html">Profilo</a></li>
-            <li><a href="game.html">Gioco</a></li>
-            <li><a href="deck.html">Gestione Deck</a></li>
+            <li><a href="game.html">Decks</a></li>
+            <!-- <li><a href="deck.html">Gestione Deck</a></li> -->
         </ul>
+
     </nav>
 </header>
 
-<section id="deck-list">
-    <h2>I tuoi Decks</h2>
-    <div class="deck-item">
-        <h3>Matematica</h3>
-        <button>Modifica</button>
-        <button>Elimina</button>
+<section id="deck-management">
+    <h2>Gestione Deck</h2>
+    <div id="search-bar">
+        <input type="text" id="search-input" placeholder="Cerca deck per titolo o descrizione...">
+        <button id="search-button">Cerca</button>
     </div>
-    <div class="deck-item">
-        <h3>Storia</h3>
-        <button>Modifica</button>
-        <button>Elimina</button>
-    </div>
-    <div class="deck-item">
-        <h3>Geografia</h3>
-        <button>Modifica</button>
-        <button>Elimina</button>
+    <div id="deck-list">
+        <!-- Deck items will be dynamically inserted here -->
     </div>
 </section>
 
 <footer>
     <p>&copy; 2025 ExamRush. Tutti i diritti riservati.</p>
 </footer>
+
+<script>
+    // Sample deck data
+    const decks = [
+        {
+            title: "DevOps Fundamentals",
+            description: "A set of 30 questions to test your knowledge of DevOps principles, tools, and practices.",
+            teacher_id: "teacher_123"
+        },
+        {
+            title: "Cybersecurity Basics",
+            description: "A set of 30 questions to test your knowledge of cybersecurity principles, tools, and best practices.",
+            teacher_id: "teacher_456"
+        },
+        {
+            title: "Networking Essentials",
+            description: "A set of 30 questions to test your knowledge of networking concepts and protocols.",
+            teacher_id: "teacher_789"
+        }
+    ];
+
+    // Function to render decks
+    function renderDecks(filteredDecks) {
+        const deckList = document.getElementById("deck-list");
+        deckList.innerHTML = ""; // Clear existing content
+
+        filteredDecks.forEach(deck => {
+            const deckItem = document.createElement("div");
+            deckItem.className = "deck-item";
+            deckItem.innerHTML = `
+                <h3>${deck.title}</h3>
+                <p>${deck.description}</p>
+                <p><strong>Teacher ID:</strong> ${deck.teacher_id}</p>
+            `;
+
+            // Add click event
+                deckItem.addEventListener("click", () => {
+                  showMessage(`You clicked on: ${deck.title}`);
+                });
+
+            deckList.appendChild(deckItem);
+        });
+    }
+
+    // Initial render of all decks
+    renderDecks(decks);
+
+    // Search functionality
+    const searchInput = document.getElementById("search-input");
+    const searchButton = document.getElementById("search-button");
+
+    searchButton.addEventListener("click", () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        const filteredDecks = decks.filter(deck =>
+            deck.title.toLowerCase().includes(searchTerm) ||
+            deck.description.toLowerCase().includes(searchTerm)
+        );
+        renderDecks(filteredDecks);
+    });
+
+    // Optional: Search as you type
+    searchInput.addEventListener("input", () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        const filteredDecks = decks.filter(deck =>
+            deck.title.toLowerCase().includes(searchTerm) ||
+            deck.description.toLowerCase().includes(searchTerm)
+        );
+        renderDecks(filteredDecks);
+    });
+</script>
 </body>
 </html>
