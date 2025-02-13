@@ -15,23 +15,25 @@
             <li><a href="home.html">Home</a></li>
             <li><a href="profile.html">Profilo</a></li>
             <li><a href="deck.html">Decks</a></li>
-            <!-- <li><a href="deck.html">Gestione Deck</a></li> -->
         </ul>
     </nav>
 </header>
 
-<section id="welcome-banner">
-    <h1 style="color:black">Benvenuto in ExamRush</h1>
-    <p style="color:black">Preparati a sfidare i tuoi amici e a migliorare le tue competenze!</p>
-</section>
+<a href="profile.html" style="text-decoration: none;">
+    <section id="user-profile-box">
+        <img id="profile-img" alt="Immagine Profilo" style="background-color: white">
+        <ul>
+            <li><span id="username">[Username]</span></li>
+            <li>Punteggio medio: 85%</li>
+            <li>Partite giocate: 15</li>
+        </ul>
+    </section>
+</a>
 
-<section id="profile">
-    <h2>Ciao, <span id="username">[Username]</span></h2>
-    <p>Punteggio medio: 85%</p>
-    <p>Partite giocate: 15</p>
+<!-- Aggiungi un contenitore per il pulsante -->
+<div id="button-container">
     <button onclick="location.href='deck.html'">Inizia una Sfida</button>
-    <!-- <button onclick="location.href='deck.html'">Gestisci i tuoi Deck</button> -->
-</section>
+</div>
 
 <footer>
     <p>&copy; 2025 ExamRush. Tutti i diritti riservati.</p>
@@ -46,9 +48,14 @@
             var userInfo = JSON.parse(userInfoJSON); // Converte il JSON in oggetto
 
             // Aggiorna i dati nel profilo
+            //showMessage(userInfo.image);
+            document.getElementById("profile-img").src = userInfo.image;
+
+            // Aggiorna i dati nel profilo
             document.getElementById("username").textContent = userInfo.name || "Ospite";
             document.getElementById("average-score").textContent = userInfo.average_score + "%" || "N/D";
             document.getElementById("played-games").textContent = userInfo.played_games || "N/D";
+
         } catch (e) {
             console.error("Errore durante il recupero delle informazioni utente: " + e.message);
             document.getElementById("username").textContent = "Ospite";

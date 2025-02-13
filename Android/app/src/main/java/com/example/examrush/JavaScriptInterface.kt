@@ -25,6 +25,7 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
     private val client = OkHttpClient() // OkHttp client per richieste HTTP
 
     var deckJson : String = ""// Decks in ArrayJSON
+    val urltarget: String = "http://192.168.0.10:5000"
 
 
 
@@ -58,7 +59,7 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
     }
 
     private fun fetchUserInfo(email: String) {
-        val url = "http://192.168.0.10:5000/api/users"
+        val url = urltarget + "/api/users"
         val json = JSONObject().put("email", email).toString()
 
         val mediaType = "application/json".toMediaType()
@@ -159,7 +160,7 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
     }
 
     fun fetchDecks() {
-    val url = "http://192.168.0.10:5000/api/decks"
+    val url = urltarget + "/api/decks"
 
     val request = Request.Builder()
         .url(url)

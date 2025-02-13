@@ -9,12 +9,26 @@
     font-size: 1.2rem;
 }
 
-button {
-    width: 100%;
-    margin-top: 20px;
+#profile {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
 }
 
-/* Stile per il banner di benvenuto */
+#button-container {
+    position: fixed;
+    bottom: 100px; /* Distanza dal footer */
+    width: 100%;
+    text-align: center;
+}
+
+button {
+    margin-top: 20px;
+    width: 80%; /* Puoi regolare la larghezza */
+    max-width: 300px; /* Larghezza massima */
+}
+
 #welcome-banner {
     background-image: url('assets/images/welcome-banner.jpg');
     background-size: cover;
@@ -22,4 +36,39 @@ button {
     text-align: center;
     padding: 30px;
     margin-bottom: 20px;
+}
+
+#user-profile-box {
+    background-color: #3498db;
+    color: white;
+    padding: 20px; /* Padding già aumentato */
+    border-radius: 15px; /* Bordo arrotondato */
+    text-align: left;
+    width: calc(100% - 40px); /* Larghezza ridotta per compensare il padding */
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px; /* Margine inferiore aumentato */
+    margin-top: 50px; /* Margine superiore aumentato */
+    margin-left: auto; /* Sposta a destra */
+    margin-right: auto; /* Centra orizzontalmente */
+    max-width: 600px; /* Imposta una larghezza massima per evitare che si allarghi troppo */
+}
+
+#user-profile-box img {
+    width: 80px; /* Aumenta la larghezza dell'immagine */
+    height: 80px; /* Aumenta l'altezza dell'immagine */
+    border-radius: 50%;
+    margin-right: 20px; /* Aumenta la distanza tra l'immagine e il testo */
+}
+
+#user-profile-box ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#user-profile-box li {
+    margin: 10px 0; /* Aumenta la distanza tra gli elementi della lista */
+    font-size: 20px; /* Aumenta la dimensione del font */
 }
