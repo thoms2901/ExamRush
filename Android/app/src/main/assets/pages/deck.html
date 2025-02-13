@@ -39,23 +39,8 @@
 
 <script>
     // Sample deck data
-    const decks = [
-        {
-            title: "DevOps Fundamentals",
-            description: "A set of 30 questions to test your knowledge of DevOps principles, tools, and practices.",
-            teacher_id: "teacher_123"
-        },
-        {
-            title: "Cybersecurity Basics",
-            description: "A set of 30 questions to test your knowledge of cybersecurity principles, tools, and best practices.",
-            teacher_id: "teacher_456"
-        },
-        {
-            title: "Networking Essentials",
-            description: "A set of 30 questions to test your knowledge of networking concepts and protocols.",
-            teacher_id: "teacher_789"
-        }
-    ];
+    const decks_str = Android.getAllDecks();
+    const decks = JSON.parse(decks_str);
 
     // Function to render decks
     function renderDecks(filteredDecks) {

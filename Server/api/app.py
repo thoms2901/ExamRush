@@ -46,6 +46,18 @@ def get_user_by_email():
     return jsonify(user) if user else (jsonify({"error": "Utente non trovato"}), 404)
 
 
+# Restituisce tutti i deck disponibili
+
+@app.route("/api/decks", methods=["GET"])
+def get_decks():
+    # Fetch all decks from the MongoDB collection with specific fields
+    decks = list(decks_collection.find(
+        {},  # Empty filter to match all documents
+        {"_id": 0, "title": 1, "description": 1, "teacher_id": 1}  # Include only these fields
+    ))
+    return jsonify(decks)
+
+
 
 # # Restituisce l'immagine del profilo dell'utente
 # @app.route("/api/users/<user_id>/profile-image", methods=["GET"])

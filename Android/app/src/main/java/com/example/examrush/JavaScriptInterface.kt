@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.*
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 
@@ -20,7 +21,12 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+
     private val client = OkHttpClient() // OkHttp client per richieste HTTP
+
+    var deckJson : String = ""// Decks in ArrayJSON
+
+
 
     private fun executeAuthRequest(action: String, email: String, password: String) {
         val task = when (action) {
@@ -32,6 +38,7 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
         task.addOnCompleteListener { taskResult ->
             if (taskResult.isSuccessful) {
                 fetchUserInfo(email) // ✅ Chiamata al server dopo login riuscito
+                fetchDecks()
             } else {
                 sendResultToWeb(action, "failure")
             }
@@ -141,5 +148,53 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
     companion object {
         const val IMAGE_PICK_REQUEST_CODE = 1001
     }
+
+
+
+
+    @JavascriptInterface
+    fun getAllDecks(): String{
+        Log.d("Second JSONdeck", deckJson)
+        return deckJson
+    }
+
+    fun fetchDecks() {
+    val url = "http://192.168.0.10:5000/api/decks"
+
+    val request = Request.Builder()
+        .url(url)
+        .get()
+        .build()
+
+    client.newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            Log.e("FetchDecks", "Error in request: ${e.message}")
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+            if (!response.isSuccessful) {
+                Log.e("FetchDecks", "HTTP Error: ${response.code}")
+                return
+            }
+
+            val responseBody = response.body?.string()
+            if (responseBody.isNullOrEmpty()) {
+                Log.e("FetchDecks", "Empty response body")
+                return
+            }
+
+            try {
+                val decksArray = JSONArray(responseBody)
+                deckJson = decksArray.toString()
+                Log.d("First JSONdeck", "Decks fetched: $deckJson")
+            } catch (e: Exception) {
+                Log.e("FetchDecks", "Error parsing JSON: ${e.message}")
+            }
+        }
+    })
+
+    }
+
+
 
 }
