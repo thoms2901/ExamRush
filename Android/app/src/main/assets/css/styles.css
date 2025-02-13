@@ -39,7 +39,7 @@ h2 {
 
 button {
     padding: 10px 15px;
-    background-color: #3498db;
+    background-color: #648db5;
     color: white;
     border: none;
     cursor: pointer;
@@ -47,7 +47,7 @@ button {
 }
 
 button:hover {
-    background-color: #2980b9;
+    background-color: #648db5;
 }
 
 footer {
