@@ -20,6 +20,12 @@
     border-radius: 10px;
 }
 
+#info {
+          background-color: #ecf0f1;
+          padding: 20px;
+          border-radius: 10px;
+      }
+
 #statistics ul {
     list-style-type: none;
     padding: 0;

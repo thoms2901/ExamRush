@@ -3,54 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gioco - ExamRush</title>
-    <link rel="stylesheet" href="../css/styles.css">
+    <title>Game - ExamRush</title>
     <link rel="stylesheet" href="../css/game.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/home.css">
     <script src="../js/main.js" defer></script>
 </head>
 <body>
 <header>
     <nav>
-        <!--
-        <ul>
-            <li><a href="home.html">Home</a></li>
-            <li><a href="profile.html">Profilo</a></li>
-            <li><a href="game.html">Gioco</a></li>
-            <li><a href="deck.html">Gestione Deck</a></li>
+        <ul style="display: flex; align-items: center; padding: 0; margin: 0;">
+            <li style="margin-right: auto; list-style: none;">
+                <a href="deck.html" style="font-size: 24px; text-decoration: none; padding: 10px;">⬅</a>
+            </li>
         </ul>
-        -->
     </nav>
 </header>
 
-<section id="game-container">
-    <h2>Inizia la Sfida!</h2>
-    <div id="question">
-        <p>Qual è la capitale della Francia?</p>
-    </div>
-    <div id="answers">
-        <button class="answer">Roma</button>
-        <button class="answer">Madrid</button>
-        <button class="answer">Parigi</button>
-        <button class="answer">Berlino</button>
-    </div>
-    <div id="timer">Tempo rimasto: 30s</div>
-</section>
 
-<footer>
-    <p>&copy; 2025 ExamRush. Tutti i diritti riservati.</p>
-</footer>
-
+<main>
+    <button id="start-turn"><img id="profile-img" src="../images/pick-card.png" alt="Immagine Profilo"></button>
+    <div id="quiz-container" style="display: none;">
+        <p id="question-text"></p>
+        <div id="answers-container"></div>
+        <p id="timer">Tempo rimanente: 30s</p>
+    </div>
+    <p id="score">Punteggio: 0</p>
+</main>
 <script>
-    // Funzione per gestire il timer e la logica del gioco
-    let timer = 30;
-    const timerElement = document.getElementById("timer");
+    const quizData = {
+        title: 'DevOps Fundamentals',
+        cards: [
+            { question: 'What does CI/CD stand for in DevOps?', answers: ['Continuous Integration/Continuous Deployment', 'Code Integration/Code Deployment', 'Continuous Inspection/Continuous Delivery', 'Code Inspection/Code Deployment'], correct_answer: 'Continuous Integration/Continuous Deployment' },
+            { question: 'Which tool is commonly used for containerization in DevOps?', answers: ['Docker', 'Jenkins', 'Kubernetes', 'Ansible'], correct_answer: 'Docker' },
+            { question: 'What is the primary goal of DevOps?', answers: ['To increase the number of software releases', 'To improve collaboration between development and operations teams', 'To reduce the cost of infrastructure', 'To automate all testing processes'], correct_answer: 'To improve collaboration between development and operations teams' },
+            { question: 'Which of the following is a configuration management tool?', answers: ['Jenkins', 'Terraform', 'Ansible', 'Prometheus'], correct_answer: 'Ansible' }
+        ]
+    };
 
-    setInterval(() => {
-        if (timer > 0) {
-            timer--;
-            timerElement.textContent = `Tempo rimasto: ${timer}s`;
+    const totalTurns = Math.floor(quizData.cards.length * 0.66);
+    let currentTurn = 0;
+    let score = 0;
+    let timer;
+    let timeLeft = 30;
+
+    const startButton = document.getElementById('start-turn');
+    const quizContainer = document.getElementById('quiz-container');
+    const questionText = document.getElementById('question-text');
+    const answersContainer = document.getElementById('answers-container');
+    const timerDisplay = document.getElementById('timer');
+    const scoreDisplay = document.getElementById('score');
+
+    function startTurn() {
+        if (currentTurn >= totalTurns) {
+            alert(`Quiz finito! Punteggio finale: ${score}`);
+            return;
         }
-    }, 1000);
+
+        currentTurn++;
+        startButton.style.display = 'none';
+        quizContainer.style.display = 'block';
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        const randomIndex = Math.floor(Math.random() * quizData.cards.length);
+        const questionData = quizData.cards[randomIndex];
+
+        questionText.textContent = questionData.question;
+        answersContainer.innerHTML = '';
+
+        questionData.answers.forEach(answer => {
+            const button = document.createElement('button');
+            button.textContent = answer;
+            button.onclick = () => checkAnswer(answer, questionData.correct_answer);
+            answersContainer.appendChild(button);
+        });
+
+        startTimer();
+    }
+
+    function startTimer() {
+        timeLeft = 30;
+        timerDisplay.textContent = `Tempo rimanente: ${timeLeft}s`;
+        timer = setInterval(() => {
+            timeLeft--;
+            timerDisplay.textContent = `Tempo rimanente: ${timeLeft}s`;
+
+            if (timeLeft === 0) {
+                clearInterval(timer);
+                nextTurn();
+            }
+        }, 1000);
+    }
+
+    function checkAnswer(selected, correct) {
+        clearInterval(timer);
+        if (selected === correct) {
+            score++;
+            scoreDisplay.textContent = `Punteggio: ${score}`;
+        }
+        nextTurn();
+    }
+
+    function nextTurn() {
+        quizContainer.style.display = 'none';
+        startButton.style.display = 'inline';
+    }
+
+    startButton.addEventListener('click', startTurn);
 </script>
 </body>
 </html>
