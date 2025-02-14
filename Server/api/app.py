@@ -1,9 +1,15 @@
 from flask import *
 import base64
 from pymongo import MongoClient
+import boto3
+import logging
 import os
+from botocore.exceptions import ClientError
+from io import BytesIO
+
 
 app = Flask(__name__)
+app.logger.setLevel(logging.DEBUG)
 
 # Configurazioni MongoDB
 client = MongoClient(os.getenv("MONGO_URI"))
@@ -12,6 +18,20 @@ users_collection = db["users"]
 decks_collection = db["decks"]
 cards_collection = db["cards"]
 
+
+# Configurazione MinIO (S3)
+s3 = boto3.client(
+    "s3",
+    endpoint_url=os.getenv("MINIO_ENDPOINT"),
+    aws_access_key_id=os.getenv("MINIO_ACCESS_KEY"),
+    aws_secret_access_key=os.getenv("MINIO_SECRET_KEY"),
+)
+
+BUCKET_NAME = "uploads"
+try:
+    s3.create_bucket(Bucket=BUCKET_NAME)
+except:
+    pass  # Il bucket potrebbe già esistere
 
 
 # Registra un nuovo utente
@@ -65,6 +85,45 @@ def get_deck_by_title(deck_id):
     deck = decks_collection.find_one({"title": title}, {"_id": 0})
     return jsonify(deck) if deck else (jsonify({"error": "Deck non trovato"}), 404)
 
+
+
+@app.route("/api/users/<user_id>/profile-image", methods=["GET"])
+def get_profile_image(user_id):
+    app.logger.info(f"🔍 [DEBUG] Richiesta immagine per user_id: {user_id}")
+
+    user = users_collection.find_one({"user_id": int(user_id)}, {"_id": 0, "image": 1})
+    app.logger.info(f"📄 [DEBUG] Utente trovato nel DB: {user}")
+
+    if user and "image" in user:
+        image_entry = db.images.find_one({"filename": user["image"]}, {"_id": 0, "url": 1})
+        file_key = image_entry["url"].replace("uploads/", "") if image_entry else "default-profile.jpg"
+    else:
+        file_key = "default-profile.jpg"
+
+    app.logger.info(f"🖼️ [DEBUG] File richiesto: {file_key}")
+
+    # Lista i file nel bucket per verificare se esiste
+    try:
+        app.logger.info("[DEBUG] 🔎 File presenti nel bucket:")
+        for obj in s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix="").get("Contents", []):
+            app.logger.info(f" - {obj['Key']}")
+    except ClientError as e:
+        app.logger.error(f"⚠️ [DEBUG] Errore nel listare i file: {e}")
+
+    try:
+        # Scarica l'immagine in memoria
+        image_data = BytesIO()
+        s3.download_fileobj(BUCKET_NAME, file_key, image_data)
+        image_data.seek(0)
+
+        content_type = "image/jpeg" if file_key.endswith(".jpg") or file_key.endswith(".jpeg") else "image/png"
+        app.logger.info(f"✅ [DEBUG] Immagine scaricata correttamente: {file_key}")
+
+        return Response(image_data.read(), content_type=content_type)
+
+    except ClientError as e:
+        app.logger.error(f"❌ [DEBUG] Errore nel recuperare l'immagine: {e}")
+        return Response(f"Errore nel recuperare l'immagine: {e}", status=500)
 
 
 # # Restituisce l'immagine del profilo dell'utente

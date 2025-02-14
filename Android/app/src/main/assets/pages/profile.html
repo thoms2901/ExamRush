@@ -19,7 +19,6 @@
         </ul>
     </nav>
 </header>
-
 <section id="profile-info">
     <div>
         <h2>Il tuo Profilo</h2>
@@ -30,9 +29,10 @@
     <div id="info">
         <h3>Dati Profilo</h3>
         <ul>
-            <li>Nome: nomeutente</li>
-            <li >Email: email</li>
-            <li>Ruolo: studente</li>
+            <li>Nome: <span id="user-name">Nome utente</span></li>
+            <li>Cognome: <span id="user-surname">Cognome</span></li>
+            <li>Email: <span id="user-email">Email</span></li>
+            <li>Ruolo: <span id="user-role">Ruolo</span></li>
         </ul>
     </div>
 </section>
@@ -40,10 +40,10 @@
 <div id="statistics">
     <h3>Statistiche</h3>
     <ul>
-        <li>Partite giocate: 15</li>
-        <li >Vittorie: 10</li>
-        <li>Percentuale di vittorie: 67%</li>
-        <li>Punteggio medio per partita: 85</li>
+        <li>Partite giocate: <span id="played-games">0</span></li>
+        <li>Vittorie: <span id="score">0</span></li>
+        <li>Percentuale di vittorie: <span id="win-percentage">0%</span></li>
+        <li>Punteggio medio per partita: <span id="average-score">0</span></li>
     </ul>
 </div>
 
@@ -54,17 +54,31 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         try {
-            var userInfoJSON = Android.getUserInfo(); // Ottiene il JSON dall'interfaccia Kotlin
-            var userInfo = JSON.parse(userInfoJSON); // Converte il JSON in oggetto
+        var userInfo = JSON.parse(Android.getUserInfo());
 
-            // Aggiorna i dati nel profilo
-            //showMessage(JSON.stringify(userInfo, null, 2));
-            document.getElementById("profile-img").src = userInfo.image;
+        // Aggiorna i dati nel profilo
+        document.getElementById("profile-img").src = userInfo.urltarget + "/api/users/" + userInfo.user_id + "/profile-image";
+        document.getElementById("user-name").textContent = userInfo.name;
+        document.getElementById("user-surname").textContent = userInfo.surname;
+        document.getElementById("user-email").textContent = userInfo.email;
+        document.getElementById("user-role").textContent = userInfo.role;
+
+        // Aggiorna le statistiche
+        document.getElementById("played-games").textContent = userInfo.played_games;
+        document.getElementById("score").textContent = userInfo.score;
+        document.getElementById("average-score").textContent = userInfo.average_score;
+
+        // Calcola la percentuale di vittorie
+        var winPercentage = (userInfo.score / (userInfo.played_games || 1));
+        document.getElementById("win-percentage").textContent = winPercentage.toFixed(2) + "%";
+
+        //showMessage("Dati aggiornati con successo");
 
         } catch (e) {
             console.error("Errore durante il recupero delle informazioni utente: " + e.message);
         }
     });
+
 
     function changeProfilePic() {
         Android.pickImageFromGallery(); // Call Kotlin function

@@ -12,7 +12,7 @@ BUCKET_NAME = "uploads"
 
 # Crea il bucket se non esiste
 try:
-    s3.create_bucket(Bucket=BUCKET_NAME)
+    s3.create_bucket(Bucket=BUCKET_NAME) 
 except:
     pass  # Il bucket potrebbe già esistere
 

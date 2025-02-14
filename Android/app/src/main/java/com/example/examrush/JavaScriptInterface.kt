@@ -23,12 +23,10 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
         context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
 
     private val client = OkHttpClient() // OkHttp client per richieste HTTP
-    val urltarget: String = "http://192.168.0.10:5000"
-
+    val urltarget: String = "http://192.168.215.228:5000"
 
     var deckJson : String = ""// Decks in ArrayJSON
     var currentDeck : String = "" // Cards in JSon
-
 
     private fun executeAuthRequest(action: String, email: String, password: String) {
         val task = when (action) {
@@ -59,69 +57,79 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
         executeAuthRequest("register", email, password)
     }
 
-    private fun fetchUserInfo(email: String) {
-        val url = urltarget + "/api/users"
-        val json = JSONObject().put("email", email).toString()
 
+    private fun makeHttpRequest(method: String, path: String, body: JSONObject?, callback: (Boolean, String?) -> Unit) {
+        val url = "$urltarget$path"
         val mediaType = "application/json".toMediaType()
-        val requestBody = json.toRequestBody(mediaType)
+        val requestBody = body?.toString()?.toRequestBody(mediaType)
 
-        val request = Request.Builder()
+        val requestBuilder = Request.Builder()
             .url(url)
-            .post(requestBody)
-            .build()
 
-        client.newCall(request).enqueue(object : Callback {
+        when (method.uppercase()) {
+            "GET" -> requestBuilder.get()
+            "POST" -> requestBody?.let { requestBuilder.post(it) }
+            "PUT" -> requestBody?.let { requestBuilder.put(it) }
+            "DELETE" -> requestBody?.let { requestBuilder.delete(it) } ?: requestBuilder.delete()
+            else -> {
+                Log.e("HTTP", "Metodo non supportato: $method")
+                callback(false, "Metodo non supportato")
+                return
+            }
+        }
+
+        client.newCall(requestBuilder.build()).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                Log.e("Auth", "Errore nella richiesta: ${e.message}")
-                sendResultToWeb("login", "failure")
+                Log.e("HTTP", "Errore nella richiesta: ${e.message}")
+                callback(false, e.message)
             }
 
             override fun onResponse(call: Call, response: Response) {
-                if (!response.isSuccessful) {
-                    Log.e("Auth", "Errore HTTP: ${response.code}")
-                    sendResultToWeb("login", "failure")
-                    return
-                }
-
                 val responseBody = response.body?.string()
-                if (responseBody.isNullOrEmpty()) {
-                    sendResultToWeb("login", "failure")
+                if (!response.isSuccessful) {
+                    Log.e("HTTP", "Errore HTTP: ${response.code}")
+                    callback(false, responseBody)
                     return
                 }
+                callback(true, responseBody)
+            }
+        })
+    }
 
-                val userInfo = JSONObject(responseBody)
+    private fun fetchUserInfo(email: String) {
+        val body = JSONObject().put("email", email)
+        makeHttpRequest("POST", "/api/users", body) { success, response ->
+            if (!success || response.isNullOrEmpty()) {
+                sendResultToWeb("login", "failure")
+            } else {
+                val userInfo = JSONObject(response)
                 saveUserSession(userInfo)
                 sendResultToWeb("login", "success")
             }
-
-        })
+        }
     }
 
     private fun saveUserSession(userInfo: JSONObject) {
         val editor = sharedPreferences.edit()
-        editor.putString("user_email", userInfo.getString("email"))
-        editor.putString("user_name", userInfo.getString("name"))
-        editor.putString("image", userInfo.getString("image"))
-
-        // Controlla se "role" esiste, altrimenti metti un valore predefinito
-        val role = if (userInfo.has("role")) userInfo.getString("role") else "user"
-        editor.putString("user_role", role)
-
+        editor.putString("user_info", userInfo.toString())
         editor.apply()
-        Log.d("Auth", "Utente salvato in sessione: ${userInfo.getString("email")}")
     }
+
 
 
     @JavascriptInterface
     fun getUserInfo(): String {
-        val email = sharedPreferences.getString("user_email", "Nessun utente loggato") ?: "Nessun utente loggato"
-        val name = sharedPreferences.getString("user_name", "N/A") ?: "N/A"
-        val role = sharedPreferences.getString("user_role", "N/A") ?: "N/A"
-        val image = sharedPreferences.getString("image", "../images/user.png") ?: "../images/user.png"
+        val userInfoString = sharedPreferences.getString("user_info", "{}") ?: "{}"
 
-        return JSONObject().put("email", email).put("name", name).put("role", role).put("image", image).toString()
+        val userInfo = JSONObject(userInfoString)
+        userInfo.put("urltarget", urltarget)
+
+        Log.e("DEBUG", "Inviati valori: $userInfo")
+
+        return userInfo.toString()
     }
+
+
 
     @JavascriptInterface
     fun logoutUser() {
@@ -151,9 +159,6 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
         const val IMAGE_PICK_REQUEST_CODE = 1001
     }
 
-
-
-
     @JavascriptInterface
     fun getAllDecks(): String{
         Log.d("JSONdeck", deckJson)
@@ -161,79 +166,36 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
     }
 
     fun fetchDecks() {
-    val url = urltarget + "/api/decks"
-
-    val request = Request.Builder()
-        .url(url)
-        .get()
-        .build()
-
-    client.newCall(request).enqueue(object : Callback {
-        override fun onFailure(call: Call, e: IOException) {
-            Log.e("FetchDecks", "Error in request: ${e.message}")
-        }
-
-        override fun onResponse(call: Call, response: Response) {
-            if (!response.isSuccessful) {
-                Log.e("FetchDecks", "HTTP Error: ${response.code}")
-                return
-            }
-
-            val responseBody = response.body?.string()
-            if (responseBody.isNullOrEmpty()) {
-                Log.e("FetchDecks", "Empty response body")
-                return
-            }
-
-            try {
-                val decksArray = JSONArray(responseBody)
-                deckJson = decksArray.toString()
-                Log.d("First JSONdeck", "Decks fetched: $deckJson")
-            } catch (e: Exception) {
-                Log.e("FetchDecks", "Error parsing JSON: ${e.message}")
+        makeHttpRequest("GET", "/api/decks", null) { success, response ->
+            if (!success || response.isNullOrEmpty()) {
+                Log.e("FetchDecks", "Error fetching decks")
+            } else {
+                try {
+                    val decksArray = JSONArray(response)
+                    deckJson = decksArray.toString()
+                    Log.d("First JSONdeck", "Decks fetched: $deckJson")
+                } catch (e: Exception) {
+                    Log.e("FetchDecks", "Error parsing JSON: ${e.message}")
+                }
             }
         }
-    })
-
     }
 
     @JavascriptInterface
     fun getDeckByTitle(base64Title: String) {
-        Log.d("DeckByTitle", "Sono dentro")
-        val url = urltarget + "/api/decks/" + base64Title
-
-        val request = Request.Builder()
-            .url(url)
-            .get()
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                Log.e("FetchDecksByTitle", "Error in request: ${e.message}")
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                if (!response.isSuccessful) {
-                    Log.e("FetchDecksByTitle", "HTTP Error: ${response.code}")
-                    return
-                }
-
-                val responseBody = response.body?.string()
-                if (responseBody.isNullOrEmpty()) {
-                    Log.e("FetchDecksByTitle", "Empty response body")
-                    return
-                }
-
+        makeHttpRequest("GET", "/api/decks/$base64Title", null) { success, response ->
+            if (!success || response.isNullOrEmpty()) {
+                Log.e("FetchDecksByTitle", "Error fetching deck by title")
+            } else {
                 try {
-                    val cDeck = JSONObject(responseBody)
+                    val cDeck = JSONObject(response)
                     currentDeck = cDeck.toString()
-                    Log.d("FetchDecksByTitle", "Decks fetched: $currentDeck")
+                    Log.d("FetchDecksByTitle", "Deck fetched: $currentDeck")
                 } catch (e: Exception) {
                     Log.e("FetchDecksByTitle", "Error parsing JSON: ${e.message}")
                 }
             }
-        })
-
+        }
     }
 
     @JavascriptInterface
@@ -241,6 +203,4 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
         Log.d("CurrentDeck", currentDeck)
         return currentDeck
     }
-
-
 }

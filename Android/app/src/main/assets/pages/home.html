@@ -13,7 +13,7 @@
     <nav>
         <ul>
             <li><a href="home.html">Home</a></li>
-            <li><a href="profile.html">Profilo</a></li>
+            <li><a href="profile.html">Profile</a></li>
             <li><a href="deck.html">Decks</a></li>
         </ul>
     </nav>
@@ -24,19 +24,17 @@
         <img id="profile-img" alt="Immagine Profilo" style="background-color: white">
         <ul>
             <li><span id="username">[Username]</span></li>
-            <li>Punteggio medio: 85%</li>
-            <li>Partite giocate: 15</li>
+            <li>Punteggio medio: <span id="average-score">N/D</span></li>
+            <li>Partite giocate: <span id="played-games">N/D</span></li>
         </ul>
     </section>
 </a>
-
-<!-- Aggiungi un contenitore per il pulsante -->
-<div id="button-container">
-    <button onclick="location.href='deck.html'">Inizia una Sfida</button>
-</div>
+<a href="deck.html" style="display: block; text-align: center; margin-top: 20px; font-size: 24px; font-weight: bold; background-color: #007bff; color: white; padding: 15px; border-radius: 10px; text-decoration: none;">
+    Play!
+</a>
 
 <footer>
-    <p>&copy; 2025 ExamRush. Tutti i diritti riservati.</p>
+    <p>&copy; 2025 ExamRush. Txutti i diritti riservati.</p>
 </footer>
 </body>
 </html>
@@ -48,10 +46,7 @@
             var userInfo = JSON.parse(userInfoJSON); // Converte il JSON in oggetto
 
             // Aggiorna i dati nel profilo
-            //showMessage(userInfo.image);
-            document.getElementById("profile-img").src = userInfo.image;
-
-            // Aggiorna i dati nel profilo
+            document.getElementById("profile-img").src = userInfo.urltarget + "/api/users/" + userInfo.user_id + "/profile-image";
             document.getElementById("username").textContent = userInfo.name || "Ospite";
             document.getElementById("average-score").textContent = userInfo.average_score + "%" || "N/D";
             document.getElementById("played-games").textContent = userInfo.played_games || "N/D";
