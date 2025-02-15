@@ -23,7 +23,7 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
         context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
 
     private val client = OkHttpClient() // OkHttp client per richieste HTTP
-    val urltarget: String = "http://192.168.215.228:5000"
+    val urltarget: String = "http://192.168.1.200:5000"
 
     var deckJson : String = ""// Decks in ArrayJSON
     var currentDeck : String = "" // Cards in JSon
