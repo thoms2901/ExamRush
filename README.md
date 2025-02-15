@@ -21,8 +21,8 @@ ExamRush is a mobile application designed to help students study interactively t
 | **Sensors**            | Accelerometer for switching to the next question              |
 | **Camera/Image**       | Profile picture upload and cartoon filter with OpenCV         |
 | **Concurrency**        | Flask backend managed with Docker for scalability             |
-| **Authentication**     | Firebase Authentication for login and registration           |
-| **Others**             | Ability to customize profiles and preferences                 |
+| **Authentication**     | Firebase Authentication for login and registration            |
+| **Others**             | Implementation of an image storage system using MinIO         |
 | **CRUD interface**     | REST API with Flask for data management                       |
 | **Data storage**       | MongoDB for user information and MinIO for images             |
 
