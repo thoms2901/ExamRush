@@ -83,12 +83,63 @@ def delete_user(user_id):
         logging.warning(f"Utente con ID {user_id} non trovato.")
         return jsonify({"error": "Utente non trovato"}), 404
 
-# Aggiorna le informazioni dell'utente
 @app.route("/api/users/<user_id>", methods=["PUT"])
-def update_user_info(user_id):
-    data = request.get_json()
-    users_collection.update_one({"user_id": user_id}, {"$set": data})
-    return jsonify({"message": "Informazioni aggiornate con successo!"})
+def update_user_stats(user_id):
+    logging.info(f"🔄 Richiesta PUT ricevuta per user_id: {user_id}")
+
+    try:
+        user_id = int(user_id)
+    except ValueError:
+        logging.error(f"❌ Errore: user_id '{user_id}' non è un numero valido.")
+        return jsonify({"error": "ID utente non valido"}), 400
+
+    data = request.json
+    logging.debug(f"📩 Dati ricevuti: {data}")
+
+    if "grade" not in data:
+        logging.error("❌ Errore: 'grade' non presente nella richiesta")
+        return jsonify({"error": "Grade non fornito"}), 400
+
+    grade = data["grade"]
+    if not isinstance(grade, int) or not (0 <= grade <= 30):
+        logging.error(f"❌ Errore: 'grade' non valido ({grade})")
+        return jsonify({"error": "Grade non valido"}), 400
+
+    # Trova l'utente nel database
+    user = users_collection.find_one({"user_id": user_id})
+    if not user:
+        logging.warning(f"⚠️ Utente con ID {user_id} non trovato.")
+        return jsonify({"error": "Utente non trovato"}), 404
+
+    # Recupera i dati attuali
+    played_games = user.get("played_games", 0)
+    score = user.get("score", 0)
+    previous_average = user.get("average_score", 0)
+
+    # Nuovi valori
+    played_games += 1
+    score += 1 if grade >= 18 else 0
+    new_average = round(((previous_average * (played_games - 1)) + grade) / played_games, 1)
+
+    logging.info(f"📊 Statistiche aggiornate - Played Games: {played_games}, Score: {score}, New Average: {new_average:.2f}")
+
+    # Aggiorna i dati nel database
+    result = users_collection.update_one(
+        {"user_id": user_id},
+        {"$set": {
+            "played_games": played_games,
+            "score": score,
+            "average_score": new_average
+        }}
+    )
+
+    if result.modified_count == 1:
+        logging.info(f"✅ Utente {user_id} aggiornato con successo!")
+        return jsonify({"message": "Statistiche aggiornate con successo"}), 200
+    else:
+        logging.error(f"❌ Errore durante l'aggiornamento dell'utente {user_id}")
+        return jsonify({"error": "Errore durante l'aggiornamento"}), 500
+
 
 # Restituisce le informazioni dell'utente cercandolo per email
 @app.route("/api/users", methods=["POST"])
@@ -102,23 +153,34 @@ def get_user_by_email():
     return jsonify(user) if user else (jsonify({"error": "Utente non trovato"}), 404)
 
 
-# Restituisce tutti i deck disponibili
 @app.route("/api/decks", methods=["GET"])
 def get_decks():
-    # Fetch all decks from the MongoDB collection with specific fields
-    decks = list(decks_collection.find(
-        {},  # Empty filter to match all documents
-        {"_id": 0, "title": 1, "description": 1, "teacher_id": 1}  # Include only these fields
-    ))
+    app.logger.info("Richiesta ricevuta: GET /api/decks")
+    decks = list(decks_collection.find({}, {"_id": 0, "title": 1, "description": 1, "teacher_id": 1}))
+    app.logger.info(f"Deck trovati: {len(decks)}")
     return jsonify(decks)
 
-# Restituituisci un deck dal titolo:
+
 @app.route("/api/decks/<deck_id>", methods=["GET"])
 def get_deck_by_title(deck_id):
-    decoded_bytes = base64.b64decode(deck_id)
-    title = decoded_bytes.decode('utf-8')
-    deck = decks_collection.find_one({"title": title}, {"_id": 0})
-    return jsonify(deck) if deck else (jsonify({"error": "Deck non trovato"}), 404)
+    app.logger.info(f"Richiesta ricevuta: GET /api/decks/{deck_id}")
+    
+    try:
+        decoded_bytes = base64.b64decode(deck_id)
+        title = decoded_bytes.decode('utf-8')
+        app.logger.info(f"Titolo decodificato: {title}")
+        
+        deck = decks_collection.find_one({"title": title}, {"_id": 0})
+        if deck:
+            app.logger.info("Deck trovato")
+            return jsonify(deck)
+        else:
+            app.logger.warning("Deck non trovato")
+            return jsonify({"error": "Deck non trovato"}), 404
+    except Exception as e:
+        app.logger.error(f"Errore durante la decodifica: {str(e)}")
+        return jsonify({"error": "Errore interno"}), 500
+
 
 
 
@@ -138,12 +200,12 @@ def get_profile_image(user_id):
     app.logger.info(f"🖼️ [DEBUG] File richiesto: {file_key}")
 
     # Lista i file nel bucket per verificare se esiste
-    try:
-        app.logger.info("[DEBUG] 🔎 File presenti nel bucket:")
-        for obj in s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix="").get("Contents", []):
-            app.logger.info(f" - {obj['Key']}")
-    except ClientError as e:
-        app.logger.error(f"⚠️ [DEBUG] Errore nel listare i file: {e}")
+    # try:
+    #     app.logger.info("[DEBUG] 🔎 File presenti nel bucket:")
+    #     for obj in s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix="").get("Contents", []):
+    #         app.logger.info(f" - {obj['Key']}")
+    # except ClientError as e:
+    #     app.logger.error(f"⚠️ [DEBUG] Errore nel listare i file: {e}")
 
     try:
         # Scarica l'immagine in memoria

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/home.css">
     <script src="../js/main.js" defer></script>
+    <script src="../js/game.js" defer></script>
 </head>
 <body>
 <header>
@@ -28,6 +29,8 @@
     <p id="shake-message" style="display: none; font-size: 18px; font-weight: bold;">Shake your phone for the next question!</p>
 
     <div id="quiz-container" style="display: none;">
+        <p id="question-counter"></p>
+
         <p id="question-text"></p>
         <div id="answers-container"></div>
         <p id="timer">Time Left: 30s</p>
@@ -37,124 +40,6 @@
     <p id="score">Score: 0</p>
 </main>
 
-<script>
-    const quizDataJSON = Android.getDeck();
-    const quizData = JSON.parse(quizDataJSON);
 
-    const totalTurns = Math.floor(quizData.cards.length * 0.66);
-    let currentTurn = 0;
-    let score = 0;
-    let timer;
-    let timeLeft = 30;
-
-    const startButton = document.getElementById('start-turn');
-    const quizContainer = document.getElementById('quiz-container');
-    const questionText = document.getElementById('question-text');
-    const answersContainer = document.getElementById('answers-container');
-    const timerDisplay = document.getElementById('timer');
-    const scoreDisplay = document.getElementById('score');
-    const shakeMessage = document.getElementById('shake-message');
-    const feedbackMessage = document.getElementById('feedback-message');
-
-    function startTurn() {
-        if (currentTurn >= totalTurns) {
-            showMessage(`Quiz Ended! Final Score: ${score}`);
-            return;
-        }
-
-        currentTurn++;
-        startButton.style.display = 'none';
-        shakeMessage.style.display = 'none';
-        quizContainer.style.display = 'block';
-        loadQuestion();
-    }
-
-    function loadQuestion() {
-        const randomIndex = Math.floor(Math.random() * quizData.cards.length);
-        const questionData = quizData.cards[randomIndex];
-
-        questionText.textContent = questionData.question;
-        answersContainer.innerHTML = '';
-
-        questionData.answers.forEach(answer => {
-            const button = document.createElement('button');
-            button.textContent = answer;
-            button.onclick = () => checkAnswer(answer, questionData.correct_answer);
-            answersContainer.appendChild(button);
-        });
-
-        startTimer();
-    }
-
-    function startTimer() {
-        timeLeft = 30;
-        timerDisplay.textContent = `Time Left: ${timeLeft}s`;
-        timer = setInterval(() => {
-            timeLeft--;
-            timerDisplay.textContent = `Time Left: ${timeLeft}s`;
-
-            if (timeLeft === 0) {
-                clearInterval(timer);
-                showFeedback(false);
-            }
-        }, 1000);
-    }
-
-    function checkAnswer(selected, correct) {
-        clearInterval(timer);
-        let isCorrect = selected === correct;
-        if (isCorrect) {
-            score++;
-            scoreDisplay.textContent = `Score: ${score}`;
-        }
-        showFeedback(isCorrect);
-    }
-
-    function showFeedback(isCorrect) {
-        feedbackMessage.textContent = isCorrect ? "Correct Answer! +1 punto" : "Wrong Answer!";
-        feedbackMessage.style.color = isCorrect ? "green" : "red";
-        feedbackMessage.style.display = "block";
-
-        setTimeout(() => {
-            feedbackMessage.style.display = "none";
-            nextTurn();
-        }, 2000);
-    }
-
-    function nextTurn() {
-        quizContainer.style.display = 'none';
-        startButton.style.display = 'inline';
-        shakeMessage.style.display = 'block';
-    }
-
-    startButton.addEventListener('click', startTurn);
-</script>
-
-<script>
-    let lastX = 0, lastY = 0, lastZ = 0;
-    let shakeThreshold = 30; // Sensibilità dello shake
-    let lastShakeTime = 0;
-
-    window.addEventListener("devicemotion", function(event) {
-        let acceleration = event.accelerationIncludingGravity;
-        if (!acceleration) return;
-
-        let deltaX = Math.abs(acceleration.x - lastX);
-        let deltaY = Math.abs(acceleration.y - lastY);
-        let deltaZ = Math.abs(acceleration.z - lastZ);
-
-        if ((deltaX + deltaY + deltaZ) > shakeThreshold) {
-            let now = Date.now();
-            if (now - lastShakeTime > 1000) {
-                lastShakeTime = now;
-                startTurn();
-            }
-        }
-
-        lastX = acceleration.x;
-        lastY = acceleration.y;
-        lastZ = acceleration.z;
-    }, true);
-</script>
 </body>
 </html>

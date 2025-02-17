@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profilo - ExamRush</title>
+    <title>Profile - ExamRush</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/profile.css">
     <script src="../js/main.js" defer></script>
@@ -22,32 +22,34 @@
 </header>
 <section id="profile-info">
     <div>
-        <h2>Il tuo Profilo</h2>
+        <h2>Your profile</h2>
         <img alt="Foto Profilo" id="profile-img">
-        <button onclick="changeProfilePic()">Cambia Foto</button>
+        <button onclick="changeProfilePic()">Change Photo</button>
     </div>
 
     <div id="info">
-        <h3>Dati Profilo</h3>
+        <h3>Profile Data</h3>
         <ul>
-            <li>Nome: <span id="user-name">Nome utente</span></li>
-            <li>Cognome: <span id="user-surname">Cognome</span></li>
+            <li>First Name: <span id="user-name">User Name</span></li>
+            <li>Last Name: <span id="user-surname">Surname</span></li>
             <li>Email: <span id="user-email">Email</span></li>
-            <li>Ruolo: <span id="user-role">Ruolo</span></li>
+            <li>Role: <span id="user-role">Role</span></li>
         </ul>
+
     </div>
 </section>
 
 <div id="statistics">
-    <h3>Statistiche</h3>
+    <h3>Statistics</h3>
     <ul>
-        <li>Partite giocate: <span id="played-games">0</span></li>
-        <li>Vittorie: <span id="score">0</span></li>
-        <li>Percentuale di vittorie: <span id="win-percentage">0%</span></li>
-        <li>Punteggio medio per partita: <span id="average-score">0</span></li>
+        <li>Games played: <span id="played-games">0</span></li>
+        <li>Wins: <span id="score">0</span></li>
+        <li>Win percentage: <span id="win-percentage">0%</span></li>
+        <li>Average score per game: <span id="average-score">0</span>/30</li>
     </ul>
+
 </div>
-<button id="delete-account-btn" class="danger-btn">Elimina Account</button>
+<button id="delete-account-btn" class="danger-btn">Delete Account</button>
 <button id="logout-btn" class="danger-btn">Logout</button>
 
 <footer>

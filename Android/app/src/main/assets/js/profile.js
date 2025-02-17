@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Calcola la percentuale di vittorie
         var winPercentage = (userInfo.score / (userInfo.played_games || 1));
-        document.getElementById("win-percentage").textContent = winPercentage.toFixed(2) + "%";
+        document.getElementById("win-percentage").textContent = winPercentage.toFixed(2) * 100 + "%";
 
         document.getElementById("delete-account-btn").addEventListener("click", function() {
             deleteAccount(userInfo.user_id);

@@ -163,6 +163,21 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
         }
     }
 
+    @JavascriptInterface
+    public fun refreshUserInfo() {
+        val userInfoString = getUserInfo()
+        val userInfo = JSONObject(userInfoString)
+
+        val email = userInfo.optString("email", "")
+
+        val body = JSONObject().put("email", email)
+        makeHttpRequest("POST", "/api/users", body) { success, response ->
+            val userInfo = JSONObject(response);
+            saveUserSession(userInfo);
+        }
+    }
+
+
     private fun saveUserSession(userInfo: JSONObject) {
         val editor = sharedPreferences.edit()
         editor.putString("user_info", userInfo.toString())
@@ -183,6 +198,33 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
         return userInfo.toString()
     }
 
+    @JavascriptInterface
+    fun updateUserStats(grade: Int) {
+        val userInfoString = getUserInfo()
+        val userInfo = JSONObject(userInfoString)
+
+        val userId = userInfo.optString("user_id", "")
+        if (userId.isEmpty()) {
+            Log.e("ImageUpload", "❌ Errore: user_id non trovato")
+            webView.post {
+                webView.evaluateJavascript("onUploadFailed('User ID non trovato')", null)
+            }
+            return
+        }
+        if (grade !in 0..30) {
+            Log.e("updateUserStats", "❌ Errore: Il grade deve essere tra 0 e 30.")
+            return
+        }
+        val body = JSONObject().put("grade", grade)
+
+        makeHttpRequest("PUT", "/api/users/$userId", body) { success, response ->
+            if (!success) {
+                Log.e("updateUserStats", "❌ Errore durante l'aggiornamento delle statistiche utente.")
+            } else {
+                Log.d("updateUserStats", "✅ Statistiche utente aggiornate con successo.")
+            }
+        }
+    }
 
 
     @JavascriptInterface
@@ -291,4 +333,5 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
         Log.d("CurrentDeck", currentDeck)
         return currentDeck
     }
+
 }
