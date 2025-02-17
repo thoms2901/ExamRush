@@ -34,19 +34,54 @@ except:
     pass  # Il bucket potrebbe già esistere
 
 
-# Registra un nuovo utente
 @app.route("/api/register", methods=["POST"])
 def register():
     data = request.get_json()
-    users_collection.insert_one(data)
-    return jsonify({"message": "Utente registrato con successo!"})
+
+    last_user = users_collection.find_one(sort=[("user_id", -1)])
+    new_user_id = (last_user["user_id"] + 1) if last_user else 1
+
+    new_user = {
+        "user_id": new_user_id,
+        "email": data.get("email", ""),
+        "name": data.get("firstName", ""),
+        "surname": data.get("lastName", ""),
+        "score": 0,
+        "role": "student",
+        "average_score": 0,
+        "played_games": 0,
+        "image": ""
+    }
+
+    users_collection.insert_one(new_user)
+
+    return jsonify({"message": "Utente registrato con successo!", "user_id": new_user_id})
 
 
 # Restituisce le informazioni dell'utente
 @app.route("/api/users/<user_id>", methods=["GET"])
 def get_user_info(user_id):
-    user = users_collection.find_one({"user_id": user_id}, {"_id": 0})
+    user = users_collection.find_one({"user_id": int(user_id)}, {"_id": 0})
     return jsonify(user) if user else (jsonify({"error": "Utente non trovato"}), 404)
+
+@app.route("/api/users/<user_id>", methods=["DELETE"])
+def delete_user(user_id):
+    logging.debug(f"Richiesta DELETE ricevuta per user_id: {user_id}")
+
+    try:
+        user_id = int(user_id)  # Assicura che sia un intero
+    except ValueError:
+        logging.error(f"Errore: user_id '{user_id}' non è un numero valido.")
+        return jsonify({"error": "ID utente non valido"}), 400
+
+    result = users_collection.delete_one({"user_id": user_id})
+
+    if result.deleted_count == 1:
+        logging.info(f"Utente con ID {user_id} eliminato con successo.")
+        return jsonify({"message": "Utente eliminato con successo!"}), 200
+    else:
+        logging.warning(f"Utente con ID {user_id} non trovato.")
+        return jsonify({"error": "Utente non trovato"}), 404
 
 # Aggiorna le informazioni dell'utente
 @app.route("/api/users/<user_id>", methods=["PUT"])
@@ -124,6 +159,72 @@ def get_profile_image(user_id):
     except ClientError as e:
         app.logger.error(f"❌ [DEBUG] Errore nel recuperare l'immagine: {e}")
         return Response(f"Errore nel recuperare l'immagine: {e}", status=500)
+
+
+@app.route("/api/users/<user_id>/profile-image", methods=["POST"])
+def upload_profile_image(user_id):
+    try:
+        data = request.get_json()
+
+        image_base64 = data.get("image")
+
+        if not image_base64:
+            return jsonify({"error": "Immagine non fornita"}), 400
+
+        # Controlla se l'immagine ha un prefisso MIME (es. "data:image/png;base64,")
+        if "," in image_base64:
+            parts = image_base64.split(",", 1)
+            mime_header = parts[0]
+            image_base64 = parts[1]
+
+            if "image/png" in mime_header:
+                content_type = "image/png"
+                extension = "png"
+            elif "image/jpeg" in mime_header or "image/jpg" in mime_header:
+                content_type = "image/jpeg"
+                extension = "jpg"
+            else:
+                content_type = "image/jpeg"  # Default
+                extension = "jpg"
+        else:
+            content_type = "image/jpeg"  # Default
+            extension = "jpg"
+
+        try:
+            image_data = base64.b64decode(image_base64)
+        except Exception as e:
+            return jsonify({"error": f"Errore nella decodifica Base64: {e}"}), 400
+
+        image_filename = f"profile_{user_id}.{extension}"
+        image_path = f"{image_filename}"
+
+        # Carica l'immagine su MinIO
+        s3.put_object(
+            Bucket=BUCKET_NAME,
+            Key=image_path,
+            Body=BytesIO(image_data),
+            ContentType=content_type,
+        )
+
+        # Aggiorna il percorso dell'immagine nel database MongoDB
+        users_collection.update_one(
+            {"user_id": int(user_id)},  
+            {"$set": {"image": image_filename}},
+            upsert=True
+        )
+        db.images.update_one(
+            {"filename": image_filename},
+            {"$set": {"url": f"uploads/{image_path}"}},
+            upsert=True
+        )
+
+        app.logger.info(f"✅ Immagine caricata su MinIO: {image_path}")
+
+        return jsonify({"success": True, "message": "Immagine salvata", "image_url": image_path}), 200
+
+    except Exception as e:
+        app.logger.error(f"❌ Errore nell'upload dell'immagine: {e}")
+        return jsonify({"error": str(e)}), 500
 
 
 # # Restituisce l'immagine del profilo dell'utente

@@ -52,10 +52,64 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
     }
 
     @JavascriptInterface
-    fun onRegister(email: String, password: String) {
+    fun onRegister(firstName: String, lastName: String, email: String, password: String) {
         Log.d("Auth", "Tentativo di registrazione: $email")
         executeAuthRequest("register", email, password)
+        val body = JSONObject().apply {
+            put("firstName", firstName)
+            put("lastName", lastName)
+            put("email", email)
+            put("password", password)
+        }
+
+        makeHttpRequest("POST", "/api/register", body) { success, response ->
+            if (!success || response.isNullOrEmpty()) {
+                sendResultToWeb("register", "failure")
+            } else {
+                val userInfo = JSONObject(response)
+                saveUserSession(userInfo)
+                sendResultToWeb("register", "success")
+            }
+        }
     }
+
+    @JavascriptInterface
+    fun onDeleteUser(userId: String) {
+        Log.d("Auth", "Tentativo di eliminazione utente: $userId")
+        val user = auth.currentUser
+
+        if (user == null) {
+            Log.e("Auth", "❌ Nessun utente attualmente autenticato in Firebase.")
+            sendResultToWeb("delete_user", "failure")
+            return
+        }
+
+        Log.d("Auth", "Utente attuale Firebase UID: ${user.uid}, UserID ricevuto: $userId")
+
+
+        user.delete()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("Auth", "✅ Utente eliminato da Firebase")
+
+                    // Dopo aver rimosso da Firebase, elimina dal database
+                    makeHttpRequest("DELETE", "/api/users/$userId", null) { success, response ->
+                        if (!success || response.isNullOrEmpty()) {
+                            Log.e("Auth", "❌ Errore nella cancellazione dal DB")
+                            sendResultToWeb("delete_user", "failure")
+                        } else {
+                            Log.d("Auth", "✅ Utente eliminato dal database")
+                            sendResultToWeb("delete_user", "success")
+                        }
+                    }
+                } else {
+                    Log.e("Auth", "❌ Errore eliminazione Firebase: ${task.exception?.message}")
+                    sendResultToWeb("delete_user", "failure")
+                }
+            }
+
+    }
+
 
 
     private fun makeHttpRequest(method: String, path: String, body: JSONObject?, callback: (Boolean, String?) -> Unit) {
@@ -153,6 +207,40 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
     fun pickImageFromGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         (context as Activity).startActivityForResult(intent, IMAGE_PICK_REQUEST_CODE)
+    }
+
+
+    @JavascriptInterface
+    fun uploadProfileImageFromJS(base64Image: String) {
+        val userInfoString = getUserInfo()
+        val userInfo = JSONObject(userInfoString)
+
+        val userId = userInfo.optString("user_id", "")
+        if (userId.isEmpty()) {
+            Log.e("ImageUpload", "❌ Errore: user_id non trovato")
+            webView.post {
+                webView.evaluateJavascript("onUploadFailed('User ID non trovato')", null)
+            }
+            return
+        }
+
+        val url = "/api/users/$userId/profile-image"
+
+        val jsonBody = JSONObject().apply {
+            put("image", "data:image/jpeg;base64,$base64Image")
+        }
+
+        makeHttpRequest("POST", url, jsonBody) { success, response ->
+            webView.post {
+                if (success) {
+                    Log.i("ImageUpload", "✅ Immagine caricata con successo")
+                    webView.evaluateJavascript("onUploadSuccess()", null)
+                } else {
+                    Log.e("ImageUpload", "❌ Errore nel caricamento dell'immagine: $response")
+                    webView.evaluateJavascript("onUploadFailed('${response ?: "Errore sconosciuto"}')", null)
+                }
+            }
+        }
     }
 
     companion object {

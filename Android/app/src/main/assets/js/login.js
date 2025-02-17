@@ -25,9 +25,12 @@ function handleLogin() {
 }
 
 function handleRegister() {
-    var email = document.getElementById("regEmail").value;
-    var password = document.getElementById("regPassword").value;
-    Android.onRegister(email, password);
+    var firstName = document.getElementById("first-name").value;
+    var lastName = document.getElementById("last-name").value;
+    var email = document.getElementById("email").value;
+    var password = document.getElementById("password").value;
+
+    Android.onRegister(firstName, lastName, email, password);
 }
 
 

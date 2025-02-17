@@ -7,13 +7,14 @@
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/profile.css">
     <script src="../js/main.js" defer></script>
+    <script src="../js/profile.js" defer></script>
 </head>
 <body>
 <header>
     <nav>
         <ul>
             <li><a href="home.html">Home</a></li>
-            <li><a href="profile.html">Profilo</a></li>
+            <li><a href="profile.html">Profile</a></li>
             <li><a href="deck.html">Decks</a></li>
             <!-- <li><a href="deck.html">Gestione Deck</a></li> -->
         </ul>
@@ -46,49 +47,14 @@
         <li>Punteggio medio per partita: <span id="average-score">0</span></li>
     </ul>
 </div>
+<button id="delete-account-btn" class="danger-btn">Elimina Account</button>
+<button id="logout-btn" class="danger-btn">Logout</button>
 
 <footer>
     <p>&copy; 2025 ExamRush. Tutti i diritti riservati.</p>
 </footer>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        try {
-        var userInfo = JSON.parse(Android.getUserInfo());
-
-        // Aggiorna i dati nel profilo
-        document.getElementById("profile-img").src = userInfo.urltarget + "/api/users/" + userInfo.user_id + "/profile-image";
-        document.getElementById("user-name").textContent = userInfo.name;
-        document.getElementById("user-surname").textContent = userInfo.surname;
-        document.getElementById("user-email").textContent = userInfo.email;
-        document.getElementById("user-role").textContent = userInfo.role;
-
-        // Aggiorna le statistiche
-        document.getElementById("played-games").textContent = userInfo.played_games;
-        document.getElementById("score").textContent = userInfo.score;
-        document.getElementById("average-score").textContent = userInfo.average_score;
-
-        // Calcola la percentuale di vittorie
-        var winPercentage = (userInfo.score / (userInfo.played_games || 1));
-        document.getElementById("win-percentage").textContent = winPercentage.toFixed(2) + "%";
-
-        //showMessage("Dati aggiornati con successo");
-
-        } catch (e) {
-            console.error("Errore durante il recupero delle informazioni utente: " + e.message);
-        }
-    });
-
-
-    function changeProfilePic() {
-        Android.pickImageFromGallery(); // Call Kotlin function
-    }
-
-    // Callback to update profile image
-    function onImagePicked(imagePath) {
-        showMessage("Base64 Image Received:"); // Debugging
-        document.getElementById("profile-img").src = imagePath; // Update image
-    }
 
 
 </script>

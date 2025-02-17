@@ -19,31 +19,29 @@
         </ul>
     </nav>
 </header>
-
 <section id="register-form">
     <h2>Crea il tuo Account</h2>
     <form id="registerForm">
         <div class="form-group">
-            <label for="username">Nome utente</label>
-            <input type="text" id="register-username" name="username" required>
+            <label for="first-name">Nome</label>
+            <input type="text" id="first-name" name="first-name" value="Mario" required>
+        </div>
+        <div class="form-group">
+            <label for="last-name">Cognome</label>
+            <input type="text" id="last-name" name="last-name" value="Rossi" required>
         </div>
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" value="m.rossi@examrush.it" required>
         </div>
         <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="register-password" name="password" required>
-        </div>
-        <div class="form-group">
-            <label for="confirm-password">Conferma Password</label>
-            <input type="password" id="confirm-password" name="confirm-password" required>
+            <input type="password" id="password" name="password" value="password" required>
         </div>
         <button type="button" onclick="handleRegister()">Registrati</button>
     </form>
     <p>Hai già un account? <a href="login.html">Accedi qui</a></p>
 </section>
-
 <footer>
     <p>&copy; 2025 ExamRush. Tutti i diritti riservati.</p>
 </footer>
