@@ -4,8 +4,8 @@ import os
 s3 = boto3.client(
     "s3",
     endpoint_url="http://minio:9000",
-    aws_access_key_id="yft76wefwfa4w6f1FI",
-    aws_secret_access_key="yft76wefwfa4w6f1FI",
+    aws_access_key_id="minioadmin",
+    aws_secret_access_key="minioadmin",
 )
 
 BUCKET_NAME = "uploads"
