@@ -200,12 +200,12 @@ def get_profile_image(user_id):
     app.logger.info(f"🖼️ [DEBUG] File richiesto: {file_key}")
 
     # Lista i file nel bucket per verificare se esiste
-    # try:
-    #     app.logger.info("[DEBUG] 🔎 File presenti nel bucket:")
-    #     for obj in s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix="").get("Contents", []):
-    #         app.logger.info(f" - {obj['Key']}")
-    # except ClientError as e:
-    #     app.logger.error(f"⚠️ [DEBUG] Errore nel listare i file: {e}")
+    try:
+        app.logger.info("[DEBUG] 🔎 File presenti nel bucket:")
+        for obj in s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix="").get("Contents", []):
+            app.logger.info(f" - {obj['Key']}")
+    except ClientError as e:
+        app.logger.error(f"⚠️ [DEBUG] Errore nel listare i file: {e}")
 
     try:
         # Scarica l'immagine in memoria
