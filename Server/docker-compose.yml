@@ -9,8 +9,8 @@ services:
     environment:
       - MONGO_URI=mongodb://mongodb:27017/mydatabase
       - MINIO_ENDPOINT=http://minio:9000
-      - MINIO_ACCESS_KEY=minioadmin
-      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_ACCESS_KEY=yft76wefwfa4w6f&FI
+      - MINIO_SECRET_KEY=yft76wefwfa4w6f1FI
     volumes:
       - ./api:/app
       - ./minio_data:/minio_data
@@ -38,8 +38,8 @@ services:
       - "8081:8081"
     environment:
       - ME_CONFIG_MONGODB_SERVER=mongodb
-      - ME_CONFIG_BASICAUTH_USERNAME=admin
-      - ME_CONFIG_BASICAUTH_PASSWORD=admin
+      - ME_CONFIG_BASICAUTH_USERNAME=yft76wefwfa4w6f1FI
+      - ME_CONFIG_BASICAUTH_PASSWORD=yft76wefwfa4w6f1FI
 
   minio:
     image: minio/minio
@@ -48,8 +48,8 @@ services:
       - "9000:9000"
       - "9001:9001"
     environment:
-      - MINIO_ACCESS_KEY=minioadmin
-      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_ACCESS_KEY=yft76wefwfa4w6f&FI
+      - MINIO_SECRET_KEY=yft76wefwfa4w6f&FI
     command: server /data --console-address ":9001"
     # volumes:
     #   - minio_data:/data

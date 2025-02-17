@@ -22,11 +22,19 @@ class JavaScriptInterface(private val context: Context, private val webView: Web
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
 
-    private val client = OkHttpClient() // OkHttp client per richieste HTTP
-    val urltarget: String = "http://192.168.1.200:5000"
+    val client = OkHttpClient() // OkHttp client per richieste HTTP
+    //val urltarget: String = "http://192.168.1.200:5000"
+    var urltarget: String = "http://188.245.48.20:5000"
 
     var deckJson : String = ""// Decks in ArrayJSON
     var currentDeck : String = "" // Cards in JSon
+
+    @JavascriptInterface
+    fun setServerAddress(address: String) {
+        urltarget = "http://$address:5000"
+        Log.d("Server", "Nuovo server impostato: $urltarget")
+    }
+
 
     private fun executeAuthRequest(action: String, email: String, password: String) {
         val task = when (action) {

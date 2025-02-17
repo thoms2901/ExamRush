@@ -36,8 +36,27 @@
     <p>Non hai un account? <a href="register.html">Registrati qui</a></p>
 </section>
 
-<footer>
+<footer onclick="showInputField()">
     <p>&copy; 2025 ExamRush. Tutti i diritti riservati.</p>
+    <div id="server-input-container" style="display: none;">
+        <input type="text" id="server-address" placeholder="Inserisci IP/Nome Host">
+        <button onclick="updateServerAddress()">Salva</button>
+    </div>
 </footer>
-</body>
-</html>
+
+<script>
+    function showInputField() {
+        document.getElementById("server-input-container").style.display = "block";
+    }
+
+    function updateServerAddress() {
+        let serverAddress = document.getElementById("server-address").value.trim();
+        if (serverAddress) {
+            Android.setServerAddress(serverAddress); // Chiamata al metodo Kotlin
+            showMessage("Server aggiornato a: " + serverAddress);
+        }
+    }
+</script>
+
+    </body>
+    </html>
